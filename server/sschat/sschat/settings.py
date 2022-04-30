@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'channels',
-    'sschat'
+    'sschat',
+    'msg.apps.MsgConfig',
 ]
 
 MIDDLEWARE = [

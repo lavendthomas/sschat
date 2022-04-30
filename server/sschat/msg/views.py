@@ -1,8 +1,8 @@
-from django.shortcuts import render
+from django.forms import ValidationError
 from django.http import HttpResponse
+from django.shortcuts import render
 
-from django.contrib.auth.models import User
-from jsonschema import ValidationError
+# Create your views here.
 
 def _validate_sign_in(request):
     # Log here!

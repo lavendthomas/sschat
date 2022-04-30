@@ -25,4 +25,3 @@ class Friendships(models.Model):
     friend_id = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='friend_id')
     user_accepted = models.BooleanField(default=False)
     friend_accepted = models.BooleanField(default=False)
-
