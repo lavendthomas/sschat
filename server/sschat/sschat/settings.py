@@ -28,6 +28,24 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+CORS_ALLOWED_ORIGINS = [
+"http://localhost:3000",
+"http://127.0.0.1:3000",
+"http://127.0.0.1:47730",
+"http://localhost:47730",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+"http://localhost:3000",
+]
+
+CSRF_COOKIE_HTTPONLY = False # To access it from the fetch API
+SESSION_COOKIE_HTTPONLY = False # To access it from the fetch API
+
+# CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+APPEND_SLASH=False
+
 
 # Application definition
 
@@ -38,6 +56,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'channels',
     'sschat',
     'msg.apps.MsgConfig',
@@ -45,6 +64,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',

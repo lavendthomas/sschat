@@ -2,10 +2,9 @@ import json
 import logging
 
 from django.forms import ValidationError
-from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponse, JsonResponse
+from django.middleware.csrf import get_token
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
 
 from django.contrib.auth.models import User
 
@@ -25,13 +24,6 @@ def index(request):
     return HttpResponse("Hello, world. You're at the polls index.")
 
 
-# @login_required(login_url='/msg/login/')
-def ping(request):
-    if request.user.is_authenticated:
-        return HttpResponse("pong")
-    return HttpResponse("plouf")
-
-
 def sign_in(request):
     LOGGER.info("sign_in" + str(request))
     body = json.loads(request.body.decode('utf-8'))
@@ -47,7 +39,6 @@ def sign_in(request):
     
     return HttpResponse("Welcome")
     
-
 
 def sign_up(request):
     LOGGER.info("sign_up" + str(request))
@@ -75,3 +66,12 @@ def sign_up(request):
 def sign_out(request):
     logout(request)
     return HttpResponse("disconnected")
+
+# @login_required(login_url='/msg/login/')
+def ping(request):
+    if request.user.is_authenticated:
+        return JsonResponse({"result":"pong"})
+    return JsonResponse({"result":"plouf"})
+
+def csrf(request):
+    return JsonResponse({'csrfToken': get_token(request)})

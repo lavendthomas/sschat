@@ -1,27 +1,27 @@
 import React, { useRef } from "react";
 import Input from "./components/Input";
+import getCsrfToken from "./Utils";
 import "./Login.css";
 
 const Login = () => {
-    // const [username, setUsername] = useState("");
-    // const [password, setPassword] = useState("");
-
     const usernameRef = useRef();
     const passwordRef = useRef();
     
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        fetch("http://localhost:8000/msg/sign_in", {
+        fetch("http://localhost:8000/msg/sign_in/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Accept": "*/*"
+                "Accept": "*/*",
+                "X-CSRFToken": await getCsrfToken(),
                 },
-                body: JSON.stringify({
-                    user: usernameRef.current.value,
-                    password: passwordRef.current.value,
-                    }),
-                })
+            credentials: "include",
+            body: JSON.stringify({
+                user: usernameRef.current.value,
+                password: passwordRef.current.value,
+                }),
+            })
             .then(res => res.json())
             .then(data => {
                 console.log(data);
