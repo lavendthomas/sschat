@@ -4,7 +4,8 @@ import logging
 from django.forms import ValidationError
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 
 from django.contrib.auth.models import User
 
@@ -24,20 +25,11 @@ def index(request):
     return HttpResponse("Hello, world. You're at the polls index.")
 
 
+# @login_required(login_url='/msg/login/')
 def ping(request):
-    return HttpResponse("pong")
-
-def my_view(request):
-    username = request.POST['username']
-    password = request.POST['password']
-    user = authenticate(request, username=username, password=password)
-    if user is not None:
-        login(request, user)
-        # Redirect to a success page.
-        pass
-    else:
-        # Return an 'invalid login' error message.
-        pass
+    if request.user.is_authenticated:
+        return HttpResponse("pong")
+    return HttpResponse("plouf")
 
 
 def sign_in(request):
@@ -46,23 +38,15 @@ def sign_in(request):
     username = body['user']
     password = body['password']
 
-    # Check if the password is correct
-    #user = User.objects.get(username=username)
-    user = get_object_or_404(User, username=username)
-    print(user, type(user))
-
-    print(request.session)
-    print(request.session.session_key)
-
-
-    if user is None or not user.check_password(password):
+    # Give the session cookie to the client
+    user = authenticate(request, username=username, password=password)
+    if user is not None:
+        login(request, user)
+    else:
         return HttpResponse("Wrong username or password!")
     
-
-    # Give the session cookie to the client
-
-    
     return HttpResponse("Welcome")
+    
 
 
 def sign_up(request):
@@ -89,4 +73,5 @@ def sign_up(request):
     return HttpResponse("connected" + str(new_user) + "-" + str(new_profile))
 
 def sign_out(request):
-    return HttpResponse("disconnect")
+    logout(request)
+    return HttpResponse("disconnected")
