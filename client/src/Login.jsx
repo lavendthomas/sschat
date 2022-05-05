@@ -9,7 +9,7 @@ const Login = () => {
     
     const handleSubmit = async (e) => {
         e.preventDefault();
-        fetch("http://localhost:8000/msg/sign_in/", {
+        fetch("http://localhost:8000/msg/sign_in", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

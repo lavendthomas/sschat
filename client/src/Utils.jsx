@@ -4,7 +4,7 @@ let _csrfToken = null;
 
 async function getCsrfToken() {
   if (_csrfToken === null) {
-    const response = await fetch(`${API_HOST}/msg/csrf/`, {
+    const response = await fetch(`${API_HOST}/msg/csrf`, {
       credentials: 'include',
     });
     const data = await response.json();
