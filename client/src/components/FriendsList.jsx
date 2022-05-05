@@ -1,4 +1,4 @@
-const Input = (props) => {
+const FriendsList = (props) => {
 
     const [friendsList, setFriendsList] = useState([]);
 
@@ -26,7 +26,7 @@ const Input = (props) => {
         for (const friend in friendsList) {
             <li>friend</li>
         }
-        return friends_list_items
+        return friends_list_items   
     }
 
     return (
@@ -38,4 +38,4 @@ const Input = (props) => {
     );
 };
 
-export default Input;
+export default FriendsList;
