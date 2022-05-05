@@ -93,10 +93,16 @@ def csrf(request):
 
 @login_required(login_url='/msg/sign_in')
 def friends_list(request):
+    user = Profile.objects.get(user=request.user)
+
     # let's get all the friends of the user (where both accepted the friendship)
-    friends_list = Profile.objects.filter(user=request.user).filter(user_accepted=True).filter(friend_accepted=True)
-    friends_list.extend(Profile.objects.filter(friend=request.user).filter(user_accepted=True).filter(friend_accepted=True))
+    friends_list = list(Friendships.objects.filter(user=user).filter(user_accepted=True).filter(friend_accepted=True).values_list('friend'))
+    friends_list.extend(list(Friendships.objects.filter(friend=user).filter(user_accepted=True).filter(friend_accepted=True).values_list('user')))
+    
     print(friends_list)
+
+    friends_list = list(map(lambda id: Profile.objects.get(id=id[0]).user.username, friends_list))
+
     return HttpResponse("Your friends are: " + str(friends_list))
 
 
@@ -167,13 +173,25 @@ def accept_friend(request):
 @login_required(login_url='/msg/sign_in')
 def reject_friend(request):
     body = json.loads(request.body.decode('utf-8'))
-    friend = body['friend']
+    friend_username: str = body['friend']
+
+    # Make sure that the friend exists
+    if not User.objects.filter(username=friend_username).exists():
+        return HttpResponse("Friend does not exist!")
+
+    friend = Profile.objects.get(user=User.objects.get(username=friend_username))
+    user = Profile.objects.get(user=request.user)
 
     # Check if the user has a friendship with this friend
-    has_friendship_request = Friendships.objects.filter(user=friend).filter(friend=request.user).exists()
+    pending_friendship = Friendships.objects.get(user=friend, friend=user)
 
-    if (has_friendship_request):
-        friendship = Friendships.objects.get(user=request.user, friend=friend)
-        friendship.delete()
+    if (pending_friendship is None):
+        other_friendship = Friendships.objects.get(user=user, friend=friend)
+        if (other_friendship is None):
+            return HttpResponse("You are not friends with this user!")
+        else:
+            other_friendship.delete()
+            return HttpResponse("Friendship rejected!")
+    else:
+        pending_friendship.delete()
         return HttpResponse("Friendship rejected!")
-
