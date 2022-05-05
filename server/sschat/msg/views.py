@@ -86,12 +86,12 @@ def ping(request):
         return JsonResponse({"result":"pong"})
     return JsonResponse({"result":"plouf"})
 
+@login_required(login_url='/msg/sign_in')
 def csrf(request):
     return JsonResponse({'csrfToken': get_token(request)})
 
 
-# @authentificated
-@login_required
+@login_required(login_url='/msg/sign_in')
 def friends_list(request):
     # let's get all the friends of the user (where both accepted the friendship)
     friends_list = Profile.objects.filter(user=request.user).filter(user_accepted=True).filter(friend_accepted=True)
@@ -100,7 +100,7 @@ def friends_list(request):
     return HttpResponse("Your friends are: " + str(friends_list))
 
 
-# @authentificated
+@login_required(login_url='/msg/sign_in')
 def connected_friends(request):
     # let's get all the friends of the user (where both accepted the friendship)
     friends_list = Friendships.objects.filter(user_id=request.user).filter(user_accepted=True).filter(friend_accepted=True)
@@ -110,15 +110,14 @@ def connected_friends(request):
     # TODO Get their IPs
     return HttpResponse("Your friends are: " + str(connected_friends))
 
-# @authentificated
+@login_required(login_url='/msg/sign_in')
 def friends_requests(request):
     # Get the requests of the user
     friends_requests = Friendships.objects.filter(user=request.user).filter(user_accepted=False)
     return HttpResponse("Your friends requests are: " + str(friends_requests))
 
 
-# @authentificated
-@login_required
+@login_required(login_url='/msg/sign_in')
 def ask_friend(request):
     body = json.loads(request.body.decode('utf-8'))
     friend_username: str = body['friend']
@@ -129,9 +128,6 @@ def ask_friend(request):
 
     friend = Profile.objects.get(user=User.objects.get(username=friend_username))
     user = Profile.objects.get(user=request.user)
-    
-    print(friend, type(friend))
-    print(request.user, type(request.user))
 
     # Check if this user is already a friend
     if Friendships.objects.filter(user=user).filter(friend=friend).exists():
@@ -145,28 +141,30 @@ def ask_friend(request):
     new_friendship.save()
     return HttpResponse("Friendship created!")
 
-# @authentificated
+@login_required(login_url='/msg/sign_in')
 def accept_friend(request):
     body = json.loads(request.body.decode('utf-8'))
-    friend = body['friend']
+    friend_username: str = body['friend']
 
-    # Check if the friend exists
-    friend_exists = Profile.objects.filter(user=friend).exists()
-
-    if (not friend_exists):
+    # Make sure that the friend exists
+    if not User.objects.filter(username=friend_username).exists():
         return HttpResponse("Friend does not exist!")
 
-    # Check if the user has a friendship with this friend
-    has_friendship_request = Friendships.objects.filter(user=friend).filter(friend=request.user).exists()
+    friend = Profile.objects.get(user=User.objects.get(username=friend_username))
+    user = Profile.objects.get(user=request.user)
 
-    if (has_friendship_request):
-        friendship = Friendships.objects.get(user=request.user, friend=friend)
-        friendship.friend_accepted = True
-        friendship.save()
+    # Check if the user has a friendship with this friend
+    pending_friendship = Friendships.objects.get(user=friend, friend=user)
+
+    if (pending_friendship is None):
+        return HttpResponse("You are not friends with this user!")
+    else:
+        pending_friendship.friend_accepted = True
+        pending_friendship.save()
         return HttpResponse("Friendship accepted!")
 
 
-# @authentificated
+@login_required(login_url='/msg/sign_in')
 def reject_friend(request):
     body = json.loads(request.body.decode('utf-8'))
     friend = body['friend']
