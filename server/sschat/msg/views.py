@@ -98,8 +98,6 @@ def friends_list(request):
     # let's get all the friends of the user (where both accepted the friendship)
     friends_list = list(Friendships.objects.filter(user=user).filter(user_accepted=True).filter(friend_accepted=True).values_list('friend'))
     friends_list.extend(list(Friendships.objects.filter(friend=user).filter(user_accepted=True).filter(friend_accepted=True).values_list('user')))
-    
-    print(friends_list)
 
     friends_list = list(map(lambda id: Profile.objects.get(id=id[0]).user.username, friends_list))
 
@@ -108,12 +106,16 @@ def friends_list(request):
 
 @login_required(login_url='/msg/sign_in')
 def connected_friends(request):
+    user = Profile.objects.get(user=request.user)
+
     # let's get all the friends of the user (where both accepted the friendship)
-    friends_list = Friendships.objects.filter(user_id=request.user).filter(user_accepted=True).filter(friend_accepted=True)
-    friends_list.extend(Friendships.objects.filter(friend_id=request.user).filter(user_accepted=True).filter(friend_accepted=True))
-    # filter only connected friends
-    connected_friends = friends_list.filter(friend_id__is_client_connected=True)
-    # TODO Get their IPs
+    friends_list = list(Friendships.objects.filter(user=user).filter(user_accepted=True).filter(friend_accepted=True).values_list('friend'))
+    friends_list.extend(list(Friendships.objects.filter(friend=user).filter(user_accepted=True).filter(friend_accepted=True).values_list('user')))
+
+    connected_friends = list(filter(lambda id: Profile.objects.get(id=id[0]).is_client_connected, friends_list))
+
+    connected_friends = list(map(lambda id: (Profile.objects.get(id=id[0]).user.username, Profile.objects.get(id=id[0]).ip_address), connected_friends))
+
     return HttpResponse("Your friends are: " + str(connected_friends))
 
 @login_required(login_url='/msg/sign_in')
