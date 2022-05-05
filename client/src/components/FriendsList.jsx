@@ -1,39 +1,38 @@
+import { useEffect, useState } from "react";
+import getCsrfToken from "../Utils";
+
 const FriendsList = (props) => {
 
     const [friendsList, setFriendsList] = useState([]);
 
-    const fetchFriends = async () => {
-        fetch("http://localhost:8000/msg/sign_in", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "*/*",
-                "X-CSRFToken": await getCsrfToken(),
-                },
-            credentials: "include",
+    useEffect(() => {
+        getCsrfToken().then(csrfToken => {
+            fetch("http://localhost:8000/msg/friends_list", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "*/*",
+                    "X-CSRFToken": csrfToken,
+                    },
+                credentials: "include",
+                })
+                .then(res => res.json())
+                .then(data => {
+                    console.log(data);
+                    setFriendsList(data);
+                });
             })
-            .then(res => res.json())
-            .then(data => {
-                console.log(data);
-                setFriendsList(data);
-            }
-        );
-    }
-
+        }, []);
 
     const RenderFriends = () => {
-        friends_list_items = []
-        for (const friend in friendsList) {
-            <li>friend</li>
-        }
-        return friends_list_items   
+        return friendsList.map(friend => <li>{friend}</li>)
     }
 
     return (
         <div className="friends-list">
-            <ol>
+            <ul>
                 <RenderFriends />
-            </ol>
+            </ul>
         </div>
     );
 };

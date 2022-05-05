@@ -1,11 +1,14 @@
 import React, { useRef } from "react";
 import Input from "./components/Input";
+import FriendsList from "./components/FriendsList";
 import getCsrfToken from "./Utils";
 import "./Login.css";
 
 const Login = () => {
     const usernameRef = useRef();
     const passwordRef = useRef();
+
+    const loggedIn = useRef(false);
     
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -25,17 +28,21 @@ const Login = () => {
             .then(res => res.json())
             .then(data => {
                 console.log(data);
+                loggedIn.current = true;
             }
         );
     };
     
     return (
-        <div className="login">
-        <form onSubmit={handleSubmit}>
-            <Input label="Username" type="text" refer={usernameRef} />
-            <Input label="Password" type="password" refer={passwordRef} />
-            <button>Login</button>
-        </form>
+        <div>
+            <div className="login">
+            <form onSubmit={handleSubmit}>
+                <Input label="Username" type="text" refer={usernameRef} />
+                <Input label="Password" type="password" refer={passwordRef} />
+                <button>Login</button>
+            </form>
+            </div>
+            <FriendsList/>
         </div>
     );
 };
