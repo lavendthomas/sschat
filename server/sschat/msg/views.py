@@ -47,10 +47,9 @@ def sign_in(request):
     user = authenticate(request, username=username, password=password)
     if user is not None:
         login(request, user)
+        return JsonResponse({"message": "Welcome"})
     else:
-        return HttpResponse("Wrong username or password!")
-    
-    return HttpResponse("Welcome")
+        return JsonResponse({"message": "Wrong username or password!"})
     
 
 def sign_up(request):
@@ -86,7 +85,6 @@ def ping(request):
         return JsonResponse({"result":"pong"})
     return JsonResponse({"result":"plouf"})
 
-@login_required(login_url='/msg/sign_in')
 def csrf(request):
     return JsonResponse({'csrfToken': get_token(request)})
 
@@ -101,7 +99,7 @@ def friends_list(request):
 
     friends_list = list(map(lambda id: Profile.objects.get(id=id[0]).user.username, friends_list))
 
-    return HttpResponse("Your friends are: " + str(friends_list))
+    return JsonResponse(friends_list, safe=False)
 
 
 @login_required(login_url='/msg/sign_in')
