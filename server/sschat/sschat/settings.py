@@ -50,6 +50,7 @@ APPEND_SLASH=False
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -57,7 +58,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
-    'channels',
     'sschat',
     'msg.apps.MsgConfig',
 ]
@@ -91,16 +91,16 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'sschat.wsgi.application'
+# WSGI_APPLICATION = 'sschat.wsgi.application'
 ASGI_APPLICATION = 'sschat.asgi.application'
 
 CHANNEL_LAYERS = {
     'default': {
-        # 'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        # 'CONFIG': {
-        #     "hosts": [('127.0.0.1', 6379)],
-        # },
-        "BACKEND": "channels.layers.InMemoryChannelLayer"
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+        # "BACKEND": "channels.layers.InMemoryChannelLayer"#
     },
 }
 
@@ -142,6 +142,9 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# Use UUID for primary keys by default
+DEFAULT_AUTO_FIELD = 'django.db.models.UUIDField'
 
 
 # Password validation
