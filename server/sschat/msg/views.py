@@ -11,19 +11,24 @@ from django.contrib.auth.models import User
 
 
 from django.db import models
-from .models import Friendships, Profile
+from .models import Friendships, MessageQueue, Profile
 
 LOGGER = logging.getLogger(__name__)
 
 
-def authentificated(function):
-    def inner(request):
-        LOGGER.info(str(request))
-        if request.user.is_authenticated:
-            return function(request)
-        else:
-            LOGGER.info("User not authenticated!" + str(request))
-            return HttpResponse("User is not authentificated.")
+def are_friends_names(a: str, b: str):
+    a_user = User.objects.get(username=a)
+    a_profile = Profile.objects.get(user=a_user)
+
+    b_user = User.objects.get(username=b)
+    b_profile = Profile.objects.get(user=b_user)
+    
+    return are_friends(a_profile, b_profile)
+
+def are_friends(a_profile: Profile, b_profile: Profile):
+    return Friendships.objects.filter(user=a_profile, friend=b_profile, user_accepted=True, friend_accepted=True) \
+        or Friendships.objects.filter(user=b_profile, friend=a_profile, user_accepted=True, friend_accepted=True)
+
 
 
 # Create your views here.
@@ -57,8 +62,7 @@ def sign_up(request):
     body = json.loads(request.body.decode('utf-8'))
     username = body['user']
     password = body['password']
-    
-    client_ip = request.META['REMOTE_ADDR']
+    public_pgp_key = body['public_pgp_key']
 
     # Check if the user already exists
     has_user = User.objects.filter(username=username).exists()
@@ -68,7 +72,7 @@ def sign_up(request):
     new_user: User = User.objects.create(username=username)
     new_user.set_password(password)       # Better for security
 
-    new_profile = Profile.objects.create(user=new_user, ip_address=client_ip)
+    new_profile = Profile.objects.create(user=new_user, public_pgp_key=public_pgp_key)
 
     new_user.save()
     new_profile.save()
@@ -79,11 +83,6 @@ def sign_out(request):
     logout(request)
     return HttpResponse("disconnected")
 
-#@login_required(login_url='/msg/login/')
-def ping(request):
-    if request.user.is_authenticated:
-        return JsonResponse({"result":"pong"})
-    return JsonResponse({"result":"plouf"})
 
 def csrf(request):
     return JsonResponse({'csrfToken': get_token(request)})
@@ -195,3 +194,42 @@ def reject_friend(request):
     else:
         pending_friendship.delete()
         return HttpResponse("Friendship rejected!")
+
+@login_required(login_url='/msg/sign_in')
+def send_message(request):
+    body = json.loads(request.body.decode('utf-8'))
+    to_username: str = body['to']
+    message: str = body['message']
+
+    # Make sure that the friend exists
+    if not User.objects.filter(username=to_username).exists():
+        return HttpResponse("Friend does not exist!")
+    
+    to_user = User.objects.get(username=to_username)
+    to_profile = Profile.objects.get(user=to_user)
+
+    user = Profile.objects.get(user=request.user)
+
+    # Check if the user has a friendship with this friend
+    if not are_friends_names(request.user.username, to_username):
+        return HttpResponse("You are not friends with this user!")
+    
+    # Everything is ok, create the message
+    # Note: the message should be pgp-encrypted on the client side.
+    new_message = MessageQueue.objects.create(from_user=user, to_user=to_profile, message=message)
+    new_message.save()
+
+    return HttpResponse("Message sent!")
+
+
+@login_required(login_url='/msg/sign_in')
+def get_messages(request):
+    user = Profile.objects.get(user=request.user)
+
+    # Get all the messages that the user has received
+    received_messages = MessageQueue.objects.filter(to_user=user)
+    received_messages = list(map(lambda msg: {"sender" : msg.from_user.user.username, "message": msg.message, "id": msg.id}, received_messages))
+
+    # TODO remove all these messages
+
+    return JsonResponse({"received": received_messages}, safe=False)
