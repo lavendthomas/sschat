@@ -6,10 +6,13 @@ import {
   Input,
   Stack,
   Button,
+  Text,
+  Link
 } from '@chakra-ui/react';
 import getCsrfToken from "../Utils";
 
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function SimpleCard() {
 
@@ -17,6 +20,8 @@ export default function SimpleCard() {
   const [password, setPassword] = useState('');
 
   const [loggedIn, setLoggedIn] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     getCsrfToken().then(csrfToken => {
@@ -75,6 +80,7 @@ export default function SimpleCard() {
                 Sign in
               </Button>
             </Stack>
+            <Text>Don't have an account yet ?  {' '} <Link onClick={() => navigate("/signup")}>Register here</Link>.</Text>
           </Stack>
         </Box>
       </Stack>
