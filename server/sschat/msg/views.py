@@ -8,6 +8,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
 from django.contrib.auth.models import User
+from django.views.decorators.csrf import csrf_exempt
 
 
 from django.db import models
@@ -56,7 +57,7 @@ def sign_in(request):
     else:
         return JsonResponse({"message": "Wrong username or password!"})
     
-
+@csrf_exempt
 def sign_up(request):
     LOGGER.info("sign_up" + str(request))
     body = json.loads(request.body.decode('utf-8'))
@@ -77,7 +78,7 @@ def sign_up(request):
     new_user.save()
     new_profile.save()
 
-    return HttpResponse("connected" + str(new_user) + "-" + str(new_profile))
+    return JsonResponse({"message": "connected" + str(new_user) + "-" + str(new_profile)}, safe=False)
 
 def sign_out(request):
     logout(request)

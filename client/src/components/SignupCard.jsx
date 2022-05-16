@@ -10,10 +10,13 @@ import {
     Link
   } from '@chakra-ui/react';
   
-  import { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import * as openpgp from 'openpgp';
+
+export const WEBSTORAGE_KEYPAIR_ENTRY = 'keypair';
   
-  export default function SimpleCard() {
+export default function SimpleCard() {
   
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -22,7 +25,36 @@ import { useNavigate } from 'react-router-dom';
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(email, password);
+        openpgp.generateKey({
+            type: 'ecc', // Type of the key, defaults to ECC
+            curve: 'curve25519', // ECC curve name, defaults to curve25519
+            userIDs: [{name: email, email: email}], 
+            passphrase: password,
+            format: 'armored'},)
+        .then((key) => {
+            console.log(key);
+            console.log(email, password);
+
+            // Store the web using WebStorage
+            localStorage.setItem(WEBSTORAGE_KEYPAIR_ENTRY, JSON.stringify(key));
+            console.debug("Stored keypair in localStorage");
+
+            // Register with out new public key
+            fetch("http://localhost:8000/msg/sign_up", {
+              method: "POST",
+              body: JSON.stringify({
+                  user: email,
+                  password: password,
+                  public_pgp_key: key.publicKey,
+                  }),
+              })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            }
+        );
+        })
+
     };
   
     return (
@@ -63,4 +95,4 @@ import { useNavigate } from 'react-router-dom';
         </Stack>
       </Flex>
     );
-  }
+}

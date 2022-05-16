@@ -42,7 +42,7 @@ CSRF_TRUSTED_ORIGINS = [
 CSRF_COOKIE_HTTPONLY = False # To access it from the fetch API
 SESSION_COOKIE_HTTPONLY = False # To access it from the fetch API
 
-# CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 APPEND_SLASH=False
 
@@ -91,7 +91,7 @@ TEMPLATES = [
     },
 ]
 
-# WSGI_APPLICATION = 'sschat.wsgi.application'
+WSGI_APPLICATION = 'sschat.wsgi.application'
 ASGI_APPLICATION = 'sschat.asgi.application'
 
 CHANNEL_LAYERS = {
