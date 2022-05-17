@@ -1,4 +1,7 @@
 import React from 'react';
+import { useEffect, useState } from "react";
+import getCsrfToken from "../Utils"
+
 import {
   Box,
   useColorModeValue,
@@ -26,6 +29,28 @@ const StatusCircle = ({ status }) => {
 
 export default function Sidebar(){
   const bg = useColorModeValue('gray.100', 'gray.700');
+
+  const [friendsList, setFriendsList] = useState([]);
+
+  useEffect(() => {
+    getCsrfToken().then(csrfToken => {
+        fetch("http://localhost:8000/msg/friends_list_with_connection_status", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "*/*",
+                "X-CSRFToken": csrfToken,
+                },
+            credentials: "include",
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data);
+                setFriendsList(data);
+            });
+        })
+    }, []);
+
   return (
     <Box
       borderRight="1px"
@@ -38,7 +63,7 @@ export default function Sidebar(){
         </Text>
       </Center>
 
-      {FriendList.map((friend) => (
+      {friendsList.map((friend) => (
         <Center key={friend.name}>
           <Link
             _hover={{ bg: bg }}>

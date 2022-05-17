@@ -89,7 +89,7 @@ def csrf(request):
     return JsonResponse({'csrfToken': get_token(request)})
 
 
-@login_required(login_url='/msg/sign_in')
+@login_required(login_url='/login')
 def friends_list(request):
     user = Profile.objects.get(user=request.user)
 
@@ -101,8 +101,21 @@ def friends_list(request):
 
     return JsonResponse(friends_list, safe=False)
 
+@login_required(login_url='/login')
+def friends_list_with_connection_status(request):
+    user = Profile.objects.get(user=request.user)
 
-@login_required(login_url='/msg/sign_in')
+        # let's get all the friends of the user (where both accepted the friendship)
+    friends_list = list(Friendships.objects.filter(user=user).filter(user_accepted=True).filter(friend_accepted=True).values_list('friend'))
+    friends_list.extend(list(Friendships.objects.filter(friend=user).filter(user_accepted=True).filter(friend_accepted=True).values_list('user')))
+
+    print(friends_list)
+
+    friends_list = list(map(lambda id: {"name": Profile.objects.get(id=id[0]).user.username, "status": Profile.objects.get(id=id[0]).is_client_connected}, friends_list))
+
+    return JsonResponse(friends_list, safe=False)
+
+@login_required(login_url='/login')
 def connected_friends(request):
     user = Profile.objects.get(user=request.user)
 
@@ -116,14 +129,14 @@ def connected_friends(request):
 
     return HttpResponse("Your friends are: " + str(connected_friends))
 
-@login_required(login_url='/msg/sign_in')
+@login_required(login_url='/login')
 def friends_requests(request):
     # Get the requests of the user
     friends_requests = Friendships.objects.filter(user=request.user).filter(user_accepted=False)
     return HttpResponse("Your friends requests are: " + str(friends_requests))
 
 
-@login_required(login_url='/msg/sign_in')
+@login_required(login_url='/login')
 def ask_friend(request):
     body = json.loads(request.body.decode('utf-8'))
     friend_username: str = body['friend']
@@ -147,7 +160,7 @@ def ask_friend(request):
     new_friendship.save()
     return HttpResponse("Friendship created!")
 
-@login_required(login_url='/msg/sign_in')
+@login_required(login_url='/login')
 def accept_friend(request):
     body = json.loads(request.body.decode('utf-8'))
     friend_username: str = body['friend']
@@ -170,7 +183,7 @@ def accept_friend(request):
         return HttpResponse("Friendship accepted!")
 
 
-@login_required(login_url='/msg/sign_in')
+@login_required(login_url='/login')
 def reject_friend(request):
     body = json.loads(request.body.decode('utf-8'))
     friend_username: str = body['friend']
@@ -196,7 +209,7 @@ def reject_friend(request):
         pending_friendship.delete()
         return HttpResponse("Friendship rejected!")
 
-@login_required(login_url='/msg/sign_in')
+@login_required(login_url='/login')
 def send_message(request):
     body = json.loads(request.body.decode('utf-8'))
     to_username: str = body['to']
@@ -223,7 +236,7 @@ def send_message(request):
     return HttpResponse("Message sent!")
 
 
-@login_required(login_url='/msg/sign_in')
+@login_required(login_url='/login')
 def get_messages(request):
     user = Profile.objects.get(user=request.user)
 

@@ -9,6 +9,7 @@ urlpatterns = [
     path('sign_in', views.sign_in, name='sign_in'),
     path('sign_out', views.sign_out, name='sign_out'),
     path('friends_list', views.friends_list, name='friends_list'),
+    path('friends_list_with_connection_status', views.friends_list_with_connection_status, name='friends_list_with_connection_status'),
     path('connected_friends', views.connected_friends, name='connected_friends'),
     path('friends_requests', views.friends_requests, name='friends_requests'),
     path('ask_friend', views.ask_friend, name='ask_friend'),
