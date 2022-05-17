@@ -12,6 +12,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 
 from django.db import models
+from flask import Flask
 from .models import Friendships, MessageQueue, Profile
 
 LOGGER = logging.getLogger(__name__)
@@ -247,3 +248,12 @@ def get_messages(request):
     # TODO remove all these messages
 
     return JsonResponse({"received": received_messages}, safe=False)
+
+
+@login_required(login_url='/login')
+def get_pgp_key(request):
+    body = json.loads(request.body.decode('utf-8'))
+    user_str: str = body['user']
+    user = User.objects.get(username=user_str)
+    user_profile = Profile.objects.get(user=user)
+    return JsonResponse({"public_pgp_key": user_profile.pgp_key}, safe=False)

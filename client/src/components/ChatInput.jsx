@@ -1,12 +1,19 @@
-import { InputGroup, Input, InputRightElement, Button } from '@chakra-ui/react'
+import { InputGroup, Input, InputRightElement, Button    } from '@chakra-ui/react'
 import { useState } from 'react'
 
+import { fetchApiPost } from '../core/FetchApi';
 
-export default function ChatInput() {
+
+export default function ChatInput(props) {
 
     const [message, setMessage] = useState('');
 
     const handleClick = () => {
+        // Encrypt the message with the public key of the recipient.
+        fetchApiPost("msg/get_pgp_key", {"user": props.peer_username}, (json) => {
+            console.log(json);
+        })
+
         console.log(message)
     }
 
