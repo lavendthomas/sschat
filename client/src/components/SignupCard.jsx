@@ -13,8 +13,10 @@ import {
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as openpgp from 'openpgp';
+import { PGP_KEY_PASSWORD, CHAT_STORAGE } from "./../Chat";
+import ChatStorage from "../core/ChatStorage";
 
-export const WEBSTORAGE_KEYPAIR_ENTRY = 'keypair';
+export const WEBSTORAGE_KEYPAIR_ENTRY_PREFIX = 'keypair-';
   
 export default function SimpleCard() {
   
@@ -32,12 +34,15 @@ export default function SimpleCard() {
             passphrase: password,
             format: 'armored'},)
         .then((key) => {
-            console.log(key);
-            console.log(email, password);
+            console.debug(key);
+            console.debug(email, password);
 
             // Store the web using WebStorage
-            localStorage.setItem(WEBSTORAGE_KEYPAIR_ENTRY, JSON.stringify(key));
+            localStorage.setItem(WEBSTORAGE_KEYPAIR_ENTRY_PREFIX + "email", JSON.stringify(key));
             console.debug("Stored keypair in localStorage");
+
+            PGP_KEY_PASSWORD = password; // Store the password in a global variable so that the chat can decrypt the messages
+            CHAT_STORAGE = new ChatStorage(email);
 
             // Register with out new public key
             fetch("http://localhost:8000/msg/sign_up", {
@@ -50,7 +55,10 @@ export default function SimpleCard() {
               })
             .then(response => response.json())
             .then(data => {
+                alert(data);
                 console.log(data);
+                // Go tho the chat page
+                navigate("/");
             }
         );
         })

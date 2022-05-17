@@ -14,6 +14,9 @@ import getCsrfToken from "../Utils";
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { PGP_KEY_PASSWORD, CHAT_STORAGE } from "./../Chat";
+import ChatStorage from "../core/ChatStorage";
+
 export default function SimpleCard() {
 
   const [email, setEmail] = useState('');
@@ -26,6 +29,8 @@ export default function SimpleCard() {
   const handleSubmit = (e) => {
     getCsrfToken().then(csrfToken => {
         e.preventDefault();
+        PGP_KEY_PASSWORD = password; // Store the password in a global variable so that the chat can decrypt the messages
+        CHAT_STORAGE = new ChatStorage(email);
         fetch("http://localhost:8000/msg/sign_in", {
             method: "POST",
             headers: {
@@ -41,7 +46,7 @@ export default function SimpleCard() {
             })
             .then(res => res.json())
             .then(data => {
-                console.log(data);
+                console.debug(data);
                 setLoggedIn(true);
             }
         );

@@ -4,6 +4,9 @@ import ChatInput from "./components/ChatInput";
 import ChatArea from "./components/ChatArea";
 import { Flex, VStack, Spacer, Heading } from "@chakra-ui/react";
 
+export let PGP_KEY_PASSWORD = ""; // TODO Security ? Use a canary ?
+export let CHAT_STORAGE = null;
+
 const Chat = () => {
     return (
         <Flex>
