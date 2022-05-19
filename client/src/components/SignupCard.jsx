@@ -14,9 +14,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as openpgp from 'openpgp';
 import { PGP_KEY_PASSWORD, CHAT_STORAGE } from "./../Chat";
-import ChatStorage from "../core/ChatStorage";
-
-export const WEBSTORAGE_KEYPAIR_ENTRY_PREFIX = 'keypair-';
+import { ChatStorage } from "../core/ChatStorage";
+import { GLOBALS } from "../core/GlobalVariables";
   
 export default function SimpleCard() {
   
@@ -38,11 +37,11 @@ export default function SimpleCard() {
             console.debug(email, password);
 
             // Store the web using WebStorage
-            localStorage.setItem(WEBSTORAGE_KEYPAIR_ENTRY_PREFIX + "email", JSON.stringify(key));
+            localStorage.setItem(GLOBALS.WEBSTORAGE_KEYPAIR_ENTRY_PREFIX + "email", JSON.stringify(key));
             console.debug("Stored keypair in localStorage");
 
-            PGP_KEY_PASSWORD = password; // Store the password in a global variable so that the chat can decrypt the messages
-            CHAT_STORAGE = new ChatStorage(email);
+            GLOBALS.PGP_KEY_PASSWORD = password; // Store the password in a global variable so that the chat can decrypt the messages
+            GLOBALS.CHAT_STORAGE = new ChatStorage(email);
 
             // Register with out new public key
             fetch("http://localhost:8000/msg/sign_up", {
