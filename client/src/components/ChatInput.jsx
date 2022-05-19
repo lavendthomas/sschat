@@ -23,30 +23,13 @@ export default function ChatInput(props) {
                     passphrase: GLOBALS.PGP_KEY_PASSWORD,
                 });
 
-                const readableStream = new ReadableStream({
-                    start(controller) {
-                        controller.enqueue(message);
-                        controller.close();
-                    }
-                });
-
                 const encrypted = await openpgp.encrypt({
-                    message: await openpgp.createMessage({text: readableStream}),
+                    message: await openpgp.createMessage({text: message}),
                     format: "armored",
                     encryptionKeys: other_public_key,
                     signingKeys: our_private_key,
                     config: { preferredCompressionAlgorithm: openpgp.enums.compression.zlib }
                 })
-
-                console.log(encrypted);
-
-                const message_2 = await openpgp.readMessage({
-                    armoredMessage: encrypted // parse armored message
-                });
-
-                console.log(message_2.armor())
-
-                
 
                 fetchApiPost("msg/send_message", {to: props.peer_username, message: encrypted}, (json) => {
                     console.log(json)
