@@ -37,9 +37,9 @@ export default function SimpleCard() {
             console.debug(email, password);
 
             // Store the web using WebStorage
-            localStorage.setItem(GLOBALS.WEBSTORAGE_KEYPAIR_ENTRY_PREFIX + "email", JSON.stringify(key));
+            localStorage.setItem(GLOBALS.WEBSTORAGE_KEYPAIR_ENTRY_PREFIX + email, JSON.stringify(key));
             console.debug("Stored keypair in localStorage");
-
+            GLOBALS.WHOAMI = email;
             GLOBALS.PGP_KEY_PASSWORD = password; // Store the password in a global variable so that the chat can decrypt the messages
             GLOBALS.CHAT_STORAGE = new ChatStorage(email);
 

@@ -8,6 +8,7 @@ urlpatterns = [
     path('sign_up', views.sign_up, name='sign_up'),
     path('sign_in', views.sign_in, name='sign_in'),
     path('sign_out', views.sign_out, name='sign_out'),
+    path('whoami', views.whoami, name='whoami'),
     path('friends_list', views.friends_list, name='friends_list'),
     path('friends_list_with_connection_status', views.friends_list_with_connection_status, name='friends_list_with_connection_status'),
     path('get_pgp_key', views.get_pgp_key, name='get_pgp_key'),

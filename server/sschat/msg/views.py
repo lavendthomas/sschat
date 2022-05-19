@@ -13,6 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from django.db import models
 from flask import Flask
+from sqlalchemy import JSON
 from .models import Friendships, MessageQueue, Profile
 
 LOGGER = logging.getLogger(__name__)
@@ -85,6 +86,8 @@ def sign_out(request):
     logout(request)
     return HttpResponse("disconnected")
 
+def whoami(request):
+    return JsonResponse({"user" : request.user.username}, safe=False)
 
 def csrf(request):
     return JsonResponse({'csrfToken': get_token(request)})
@@ -213,12 +216,13 @@ def reject_friend(request):
 @login_required(login_url='/login')
 def send_message(request):
     body = json.loads(request.body.decode('utf-8'))
+    print(body)
     to_username: str = body['to']
     message: str = body['message']
 
     # Make sure that the friend exists
     if not User.objects.filter(username=to_username).exists():
-        return HttpResponse("Friend does not exist!")
+        return JsonResponse({"message": "Friend does not exist!"}, safe=False)
     
     to_user = User.objects.get(username=to_username)
     to_profile = Profile.objects.get(user=to_user)
@@ -227,14 +231,14 @@ def send_message(request):
 
     # Check if the user has a friendship with this friend
     if not are_friends_names(request.user.username, to_username):
-        return HttpResponse("You are not friends with this user!")
+        return JsonResponse({"message": "You are not friends with this user!"}, safe=False)
     
     # Everything is ok, create the message
     # Note: the message should be pgp-encrypted on the client side.
-    new_message = MessageQueue.objects.create(from_user=user, to_user=to_profile, message=message)
+    new_message = MessageQueue.objects.create(sender=user, recipient=to_profile, message=message)
     new_message.save()
 
-    return HttpResponse("Message sent!")
+    return JsonResponse({"message": "Message sent!"}, safe=False)
 
 
 @login_required(login_url='/login')
@@ -256,4 +260,4 @@ def get_pgp_key(request):
     user_str: str = body['user']
     user = User.objects.get(username=user_str)
     user_profile = Profile.objects.get(user=user)
-    return JsonResponse({"public_pgp_key": user_profile.pgp_key}, safe=False)
+    return JsonResponse({"public_pgp_key": user_profile.public_pgp_key}, safe=False)

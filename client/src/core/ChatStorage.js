@@ -3,6 +3,8 @@ const LOCALSOTRAGE_KEY = 'chat-storage';
 
 class ChatStorage {
 
+    // TODO use IndexedDB instead
+
     constructor(us) {
         this.us = us;
         this.load();

@@ -32,6 +32,7 @@ export default function SimpleCard() {
         e.preventDefault();
         GLOBALS.PGP_KEY_PASSWORD = password; // Store the password in a global variable so that the chat can decrypt the messages
         GLOBALS.CHAT_STORAGE = new ChatStorage(email);
+        GLOBALS.WHOAMI = email;
         fetch("http://localhost:8000/msg/sign_in", {
             method: "POST",
             headers: {
@@ -49,6 +50,7 @@ export default function SimpleCard() {
             .then(data => {
                 console.debug(data);
                 setLoggedIn(true);
+                navigate("/");
             }
         );
     }, []);
