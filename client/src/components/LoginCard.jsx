@@ -15,7 +15,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { PGP_KEY_PASSWORD, CHAT_STORAGE } from "./../Chat";
-import { ChatStorage } from "../core/ChatStorage";
+import ChatStorage from "../core/ChatStorage";
 import { GLOBALS } from "../core/GlobalVariables";
 
 export default function SimpleCard() {

@@ -51,3 +51,5 @@ class ChatStorage {
 
 
 }
+
+export default ChatStorage;
