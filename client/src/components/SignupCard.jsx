@@ -14,6 +14,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as openpgp from 'openpgp';
 import { GLOBALS } from "../core/GlobalVariables";
+import { clearCsrfToken } from '../Utils';
   
 export default function SimpleCard() {
   
@@ -53,6 +54,7 @@ export default function SimpleCard() {
             .then(data => {
                 alert(JSON.stringify(data));
                 console.log(data);
+                clearCsrfToken();
                 // Go tho the chat page
                 navigate("/");
             }

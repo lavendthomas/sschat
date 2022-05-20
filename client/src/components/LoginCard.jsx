@@ -9,7 +9,7 @@ import {
   Text,
   Link
 } from '@chakra-ui/react';
-import getCsrfToken from "../Utils";
+import getCsrfToken, { clearCsrfToken } from "../Utils";
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -49,6 +49,7 @@ export default function SimpleCard() {
             .then(data => {
                 console.debug(data);
                 setLoggedIn(true);
+                clearCsrfToken();
                 navigate("/");
             }
         );

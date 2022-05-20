@@ -13,4 +13,8 @@ async function getCsrfToken() {
   return _csrfToken;
 }
 
+export async function clearCsrfToken() {
+  _csrfToken = null;
+}
+
 export default getCsrfToken;
