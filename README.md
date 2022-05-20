@@ -13,3 +13,4 @@ sudo dnf install python3-devel
 
 - Encrypted localStorage to protect metadata from unconnected users: [SecurityJS](https://github.com/Parking-Master/SecurityJS.128#windowsecurestorage-api)
 - Username in sign up form.
+- Use IntexedDB instead of localStorage for message history

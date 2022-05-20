@@ -31,8 +31,7 @@ export default function SimpleCard() {
     getCsrfToken().then(csrfToken => {
         e.preventDefault();
         GLOBALS.PGP_KEY_PASSWORD = password; // Store the password in a global variable so that the chat can decrypt the messages
-        GLOBALS.CHAT_STORAGE = new ChatStorage(email);
-        GLOBALS.WHOAMI = email;
+        localStorage.setItem("whoami", email);
         fetch("http://localhost:8000/msg/sign_in", {
             method: "POST",
             headers: {

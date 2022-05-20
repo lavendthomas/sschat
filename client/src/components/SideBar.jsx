@@ -45,7 +45,6 @@ export default function Sidebar(){
             })
             .then(res => res.json())
             .then(data => {
-                console.log(data);
                 setFriendsList(data);
             });
         })

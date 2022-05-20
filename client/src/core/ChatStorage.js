@@ -1,5 +1,5 @@
 
-const LOCALSOTRAGE_KEY = 'chat-storage';
+const LOCALSOTRAGE_KEY = 'chat-storage-';
 
 class ChatStorage {
 
@@ -8,6 +8,13 @@ class ChatStorage {
     constructor(us) {
         this.us = us;
         this.load();
+    }
+
+    get_peers() {
+        if (!this.storage) {
+            return [];
+        }
+        return Object.keys(this.storage);
     }
 
     get_messages(from_user) {
@@ -43,11 +50,15 @@ class ChatStorage {
 
 
     save() {
-        localStorage.setItem(LOCALSOTRAGE_KEY, JSON.stringify(this.storage));
+        localStorage.setItem(LOCALSOTRAGE_KEY + this.us, JSON.stringify(this.storage));
+        console.log(this.storage)
     }
 
     load() {
-        this.storage = JSON.parse(localStorage.getItem(LOCALSOTRAGE_KEY));
+        this.storage = JSON.parse(localStorage.getItem(LOCALSOTRAGE_KEY + this.us));
+        if (!this.storage) {
+            this.storage = {};
+        }
     }
 
 
