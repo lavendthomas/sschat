@@ -15,3 +15,4 @@ sudo dnf install python3-devel
 - Username in sign up form.
 - Use IntexedDB instead of localStorage for message history
 - Check that the CSRF cookie is invalidated when loggin out.
+- Check that the message is signed. Otherwise, show the message in red.

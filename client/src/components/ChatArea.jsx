@@ -1,38 +1,79 @@
 import { Text, Box, useColorModeValue, Button } from '@chakra-ui/react'
 import { SpinnerIcon } from '@chakra-ui/icons';
-import { useState } from 'react';
-import { fetchApiPost } from '../core/FetchApi';
-// import { useState } from 'react'
 
-import { GLOBALS } from '../core/GlobalVariables';
+import { useState } from 'react';
+
+import * as openpgp from 'openpgp';
+
+import { fetchApiPost } from '../core/FetchApi';
+import getPassword, { GLOBALS } from '../core/GlobalVariables';
 
 
 export default function ChatInput(props) {
 
+    const [decryptedMessageList, setDecryptedMessageList] = useState([]);
+    const [i, setI] = useState(0);
+
+    const decryptMessage = async (message) => {
+        const me = localStorage.getItem("whoami");
+
+        const our_private_key =  await openpgp.decryptKey({
+            privateKey: await openpgp.readKey({armoredKey: JSON.parse(localStorage.getItem(GLOBALS.WEBSTORAGE_KEYPAIR_ENTRY_PREFIX + me)).privateKey}),
+            passphrase: getPassword(),
+        });
+
+        const pgp_message = await openpgp.readMessage({
+            armoredMessage: message // parse armored message
+        });
+
+        console.log("to decrypt", message)
+        console.log("our_private_key", our_private_key)
+        console.log("pgp_message", pgp_message)
+
+        const decrypted = await openpgp.decrypt({
+            message: pgp_message,
+            decryptionKeys: our_private_key,
+            config: { preferredCompressionAlgorithm: openpgp.enums.compression.zlib }
+        })
+
+        console.log("decrypted", decrypted)
+
+        // TODO check that the message is signed
+        // decryptionKeys: privateKey,
+        // expectSigned: true,
+
+        return decrypted.data;
+    }
+
     const grayBubbleColor = useColorModeValue('gray.100', 'gray.700');
     const greeBubbleColor = useColorModeValue('green.100', 'green.700');
 
-    
-    // const [message, setMessage] = useState('');
-
-    // const handleClick = () => {
-    //     console.log(message)
-    // }
-
-    const refreshMessages = () => {
-        fetchApiPost("msg/get_messages", {}, (json) => {
+    const refreshMessages = async () => {
+        fetchApiPost("msg/get_messages", {}, async (json) => {
             console.log(json.received);
             json.received.forEach((msg) => {
                 props.chatStorage.add_message(msg.sender, localStorage.getItem("whoami"), msg.message);
             });
-        })
 
+            const decryptedMessages = await Promise.all(props.chatStorage.get_messages(props.peer_username).map(msg => decryptMessage(msg.message)));
+            console.log(decryptedMessages);
+
+            const message_list = props.chatStorage.get_messages(props.peer_username).map((msg, i) => {
+                return {
+                    "direction": msg.direction,
+                    "message": decryptedMessages[i],
+                }
+            });
+            console.log("decryptedMessageList updated to ", message_list);
+            setDecryptedMessageList(message_list);
+            setI(i + 1);
+        })
     }
 
     const ShowMessages = () => {
-        console.log(props.chatStorage);
-        console.log(props.chatStorage.get_messages(props.peer_username));
-        return props.chatStorage.get_messages(props.peer_username).map(msg => {
+        console.log("Show MEssages called : " + i);
+        console.log(decryptedMessageList);
+        return decryptedMessageList.map(msg => {
             if (msg.direction == "received") {
                 return (
                     <Box margin={'1em'} width={'50%'}   borderWidth='1px' borderRadius='lg' overflow='hidden' bg={greeBubbleColor}>

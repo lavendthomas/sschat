@@ -4,7 +4,7 @@ import { useState } from 'react'
 import * as openpgp from 'openpgp';
 
 import { fetchApiPost } from '../core/FetchApi';
-import { GLOBALS } from '../core/GlobalVariables';
+import getPassword, { GLOBALS } from '../core/GlobalVariables';
 
 
 export default function ChatInput(props) {
@@ -19,7 +19,7 @@ export default function ChatInput(props) {
             const other_public_key = await openpgp.readKey({armoredKey: armoured_other_public_key});
             const our_private_key =  await openpgp.decryptKey({
                 privateKey: await openpgp.readKey({armoredKey: JSON.parse(localStorage.getItem(GLOBALS.WEBSTORAGE_KEYPAIR_ENTRY_PREFIX + me)).privateKey}),
-                passphrase: GLOBALS.PGP_KEY_PASSWORD,
+                passphrase: getPassword(),
             });
 
             const encrypted = await openpgp.encrypt({
@@ -40,6 +40,7 @@ export default function ChatInput(props) {
                 message: await openpgp.createMessage({text: message}),
                 format: "armored",
                 encryptionKeys: our_public_key,
+                signingKeys: our_private_key,
                 config: { preferredCompressionAlgorithm: openpgp.enums.compression.zlib }
             })
 

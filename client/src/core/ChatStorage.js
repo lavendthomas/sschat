@@ -26,7 +26,6 @@ class ChatStorage {
     }
 
     add_message(from_user, to_user, message) {
-
         if (to_user === this.us) {
             if (!this.storage[from_user]) {
                 this.storage[from_user] = [];
