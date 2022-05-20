@@ -222,7 +222,7 @@ def send_message(request):
 
     # Make sure that the friend exists
     if not User.objects.filter(username=to_username).exists():
-        return JsonResponse({"message": "Friend does not exist!"}, safe=False)
+        return JsonResponse({"message": "Friend does not exist!"})
     
     to_user = User.objects.get(username=to_username)
     to_profile = Profile.objects.get(user=to_user)
@@ -231,7 +231,7 @@ def send_message(request):
 
     # Check if the user has a friendship with this friend
     if not are_friends_names(request.user.username, to_username):
-        return JsonResponse({"message": "You are not friends with this user!"}, safe=False)
+        return JsonResponse({"message": "You are not friends with this user!"})
     
     # Everything is ok, create the message
     # Note: the message should be pgp-encrypted on the client side.
@@ -244,14 +244,15 @@ def send_message(request):
 @login_required(login_url='/login')
 def get_messages(request):
     user = Profile.objects.get(user=request.user)
+    user_profile = Profile.objects.get(user=request.user)
 
     # Get all the messages that the user has received
-    received_messages = MessageQueue.objects.filter(to_user=user)
-    received_messages = list(map(lambda msg: {"sender" : msg.from_user.user.username, "message": msg.message, "id": msg.id}, received_messages))
+    received_messages = MessageQueue.objects.filter(recipient=user_profile)
+    received_messages = list(map(lambda msg: {"sender" : msg.sender.user.username, "message": msg.message, "id": msg.id}, received_messages))
 
     # TODO remove all these messages
 
-    return JsonResponse({"received": received_messages}, safe=False)
+    return JsonResponse({"received": received_messages})
 
 
 @login_required(login_url='/login')
@@ -260,4 +261,4 @@ def get_pgp_key(request):
     user_str: str = body['user']
     user = User.objects.get(username=user_str)
     user_profile = Profile.objects.get(user=user)
-    return JsonResponse({"public_pgp_key": user_profile.public_pgp_key}, safe=False)
+    return JsonResponse({"public_pgp_key": user_profile.public_pgp_key})
