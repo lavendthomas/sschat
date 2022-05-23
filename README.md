@@ -19,3 +19,5 @@ sudo dnf install python3-devel
 - Show a hash of our public key and the one of our friends so make sure that chats are encrypted to the right person.
 - Handle add/remove friends.
 - Do not decrypt every messages all the time.
+- Add logs.
+- HTTPS
