@@ -72,6 +72,7 @@ export default function ChatInput(props) {
           encrypted_to_ourselves
         );
         props.setRefresh(!props.refresh);
+        setMessage("");
       }
     );
   };

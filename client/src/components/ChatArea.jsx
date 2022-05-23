@@ -1,7 +1,7 @@
 import { Text, Box, useColorModeValue, Button } from '@chakra-ui/react'
 import { SpinnerIcon } from '@chakra-ui/icons';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 import * as openpgp from 'openpgp';
 
@@ -13,6 +13,12 @@ export default function ChatInput(props) {
 
     const [decryptedMessageList, setDecryptedMessageList] = useState([]);
 
+    const messagesEndRef = useRef(null)
+
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+    }  
+
     // useEffect(() => {
     //     console.log("ChatInput useEffect")
     // }, [props, decryptedMessageList]);
@@ -21,6 +27,9 @@ export default function ChatInput(props) {
         refreshMessages();
     }, [props.refresh]);
 
+    useEffect(() => {
+        scrollToBottom()
+      }, [decryptedMessageList]);
 
 
 
@@ -64,6 +73,8 @@ export default function ChatInput(props) {
             json.received.forEach((msg) => {
                 props.chatStorage.add_message(msg.sender, localStorage.getItem("whoami"), msg.message);
             });
+
+            
             
             console.log("decrypting messages");
             const decryptedMessages = await Promise.all(props.chatStorage.get_messages(props.peer_username).map(msg => decryptMessage(msg.message)));
@@ -113,6 +124,7 @@ export default function ChatInput(props) {
                 <Text margin={'.25em'}>Quidem, ipsam illum quis sed voluptatum quae eum fugit earum !</Text>
             </Box>
             <ShowMessages />
+            <div ref={messagesEndRef} />
         </Box>
     )
 }
