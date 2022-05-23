@@ -53,7 +53,7 @@ export default function SimpleCard() {
             .then(response => response.json())
             .then(data => {
                 alert(JSON.stringify(data));
-                console.log(data);
+                // console.log(data);
                 clearCsrfToken();
                 // Go tho the chat page
                 navigate("/");

@@ -1,7 +1,7 @@
 import { Text, Box, useColorModeValue, Button } from '@chakra-ui/react'
 import { SpinnerIcon } from '@chakra-ui/icons';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import * as openpgp from 'openpgp';
 
@@ -12,7 +12,17 @@ import getPassword, { GLOBALS } from '../core/GlobalVariables';
 export default function ChatInput(props) {
 
     const [decryptedMessageList, setDecryptedMessageList] = useState([]);
-    const [i, setI] = useState(0);
+
+    // useEffect(() => {
+    //     console.log("ChatInput useEffect")
+    // }, [props, decryptedMessageList]);
+
+    useEffect(() => {
+        refreshMessages();
+    }, [props.refresh]);
+
+
+
 
     const decryptMessage = async (message) => {
         const me = localStorage.getItem("whoami");
@@ -26,9 +36,9 @@ export default function ChatInput(props) {
             armoredMessage: message // parse armored message
         });
 
-        console.log("to decrypt", message)
-        console.log("our_private_key", our_private_key)
-        console.log("pgp_message", pgp_message)
+        // console.log("to decrypt", message)
+        // console.log("our_private_key", our_private_key)
+        // console.log("pgp_message", pgp_message)
 
         const decrypted = await openpgp.decrypt({
             message: pgp_message,
@@ -36,7 +46,7 @@ export default function ChatInput(props) {
             config: { preferredCompressionAlgorithm: openpgp.enums.compression.zlib }
         })
 
-        console.log("decrypted", decrypted)
+        // console.log("decrypted", decrypted)
 
         // TODO check that the message is signed
         // decryptionKeys: privateKey,
@@ -50,13 +60,16 @@ export default function ChatInput(props) {
 
     const refreshMessages = async () => {
         fetchApiPost("msg/get_messages", {}, async (json) => {
-            console.log(json.received);
+            // console.log(json.received);
             json.received.forEach((msg) => {
                 props.chatStorage.add_message(msg.sender, localStorage.getItem("whoami"), msg.message);
             });
-
+            
+            console.log("decrypting messages");
             const decryptedMessages = await Promise.all(props.chatStorage.get_messages(props.peer_username).map(msg => decryptMessage(msg.message)));
-            console.log(decryptedMessages);
+            console.log("messages decrypted")
+            // console.log(decryptedMessages);
+            // TODO do not decryt everything
 
             const message_list = props.chatStorage.get_messages(props.peer_username).map((msg, i) => {
                 return {
@@ -64,15 +77,13 @@ export default function ChatInput(props) {
                     "message": decryptedMessages[i],
                 }
             });
-            console.log("decryptedMessageList updated to ", message_list);
+            // console.log("decryptedMessageList updated to ", message_list);
             setDecryptedMessageList(message_list);
-            setI(i + 1);
         })
     }
 
     const ShowMessages = () => {
-        console.log("Show MEssages called : " + i);
-        console.log(decryptedMessageList);
+        // console.log(decryptedMessageList);
         return decryptedMessageList.map(msg => {
             if (msg.direction == "received") {
                 return (
@@ -93,7 +104,7 @@ export default function ChatInput(props) {
 
 
     return (
-        <Box width={'100%'} height={'80vh'} marginTop={'2em'} borderWidth='1px' borderRadius='lg' overflow='hidden' >
+        <Box width={'100%'} height={'80vh'} marginTop={'2em'} borderWidth='1px' borderRadius='lg' overflow='hidden' overflowY="scroll">
             <Button leftIcon={<SpinnerIcon />} onClick={refreshMessages}>Refresh</Button>
             <Box margin={'1em'} width={'50%'}   borderWidth='1px' borderRadius='lg' overflow='hidden' bg={greeBubbleColor}>
             <Text margin={'.25em'}>Hello !</Text>

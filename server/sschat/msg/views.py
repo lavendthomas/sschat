@@ -11,9 +11,9 @@ from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 
 
-from django.db import models
-from flask import Flask
-from sqlalchemy import JSON
+# from django.db import models
+# from flask import Flask
+# from sqlalchemy import JSON
 from .models import Friendships, MessageQueue, Profile
 
 LOGGER = logging.getLogger(__name__)
@@ -230,8 +230,8 @@ def send_message(request):
     user = Profile.objects.get(user=request.user)
 
     # Check if the user has a friendship with this friend
-    if not are_friends_names(request.user.username, to_username):
-        return JsonResponse({"message": "You are not friends with this user!"})
+    # if not are_friends_names(request.user.username, to_username):
+    #     return JsonResponse({"message": "You are not friends with this user!"})
     
     # Everything is ok, create the message
     # Note: the message should be pgp-encrypted on the client side.

@@ -10,6 +10,7 @@ const Chat = () => {
 
     const [selectedUser, setSelectedUser] = useState("test7@example.com");
     const [chatStorage, setChatStorage] = useState(new ChatStorage(localStorage.getItem("whoami")));
+    const [refresh, setRefresh] = useState(false);
 
     return (
         <Flex>
@@ -17,8 +18,8 @@ const Chat = () => {
             <Spacer />
             <VStack alignSelf={'center'} width={'60%'}>
                 <Heading>{selectedUser}</Heading>
-                <ChatArea peer_username={selectedUser} chatStorage={chatStorage} />
-                <ChatInput peer_username={selectedUser} chatStorage={chatStorage} />
+                <ChatArea peer_username={selectedUser} chatStorage={chatStorage} refresh={refresh}/>
+                <ChatInput peer_username={selectedUser} chatStorage={chatStorage} refresh={refresh} setRefresh={setRefresh} />
             </VStack>
             <Spacer />
         </Flex>

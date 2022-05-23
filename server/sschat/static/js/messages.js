@@ -9,7 +9,7 @@ var messageSocket = new WebSocket(connectionString);
 // of websocket.
 function connect() {
     messageSocket.onopen = function open() {
-        console.log('WebSockets connection created.');
+        // console.log('WebSockets connection created.');
         // on websocket open, send the START event.
         messageSocket.send(JSON.stringify({
             "event": "START",
@@ -18,7 +18,7 @@ function connect() {
     };
 
     messageSocket.onclose = function (e) {
-        console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
+        // console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
         setTimeout(function () {
             connect();
         }, 1000);
@@ -47,7 +47,7 @@ function connect() {
                 }
                 break;
             default:
-                console.log("No event")
+                // console.log("No event")
         }
     };
 

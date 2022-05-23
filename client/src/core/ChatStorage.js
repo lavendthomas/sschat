@@ -50,7 +50,7 @@ class ChatStorage {
 
     save() {
         localStorage.setItem(LOCALSOTRAGE_KEY + this.us, JSON.stringify(this.storage));
-        console.log(this.storage)
+        // console.log(this.storage)
     }
 
     load() {
