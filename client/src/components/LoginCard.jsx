@@ -50,7 +50,7 @@ export default function SimpleCard() {
                 console.debug(data);
                 setLoggedIn(true);
                 clearCsrfToken();
-                navigate("/");
+                navigate("/chat");
             }
         );
     }, []);

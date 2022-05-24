@@ -1,67 +1,73 @@
-
-const LOCALSOTRAGE_KEY = 'chat-storage-';
+const LOCALSTORAGE_KEY = "chat-storage";
 
 class ChatStorage {
+  // TODO use IndexedDB instead
 
-    // TODO use IndexedDB instead
+  constructor(us) {
+    this.us = us;
+    console.log("us", us);
+    this.load();
+    this.db = indexedDB.open(LOCALSTORAGE_KEY, 1);
+  }
 
-    constructor(us) {
-        this.us = us;
-        this.load();
-    }
+  get_peers() {}
 
-    get_peers() {
-        if (!this.storage) {
-            return [];
-        }
-        return Object.keys(this.storage);
-    }
+  get_messages(from_user, to_user, updateMessageList) {
+    const transaction = this.db.transaction("chat", "readwrite");
+    const objectStore = transaction.objectStore("chat");
+    const query = objectStore.getAll([from_user, to_user]);
+    query.onsuccess = (e) => {
+      const messages = query.result;
+      updateMessageList(messages);
+    };
+  }
 
-    get_messages(from_user) {
-        if (this.storage[from_user]) {
-            return this.storage[from_user];
-        } else {
-            return [];
-        }
-    }
+  add_message(from_user, to_user, message) {
+    // console.log(message);
+    // add message to indexedDB
+    const transaction = this.db.transaction("chat", "readwrite");
+    const objectStore = transaction.objectStore("chat");
+    const request = objectStore.put({
+      value: {
+        from_to_user: [from_user, to_user],
+        message: message,
+        timestamp: Date.now(),
+      },
+      id: [from_user, to_user],
+    });
+    request.onsuccess = (e) => {
+      console.log("message added");
+    };
+    request.onerror = (e) => {
+      console.log("error adding message");
+    };
+  }
 
-    add_message(from_user, to_user, message) {
-        if (to_user === this.us) {
-            if (!this.storage[from_user]) {
-                this.storage[from_user] = [];
-            }
-            this.storage[from_user].push({
-                direction: "received",
-                message: message
-            });
-        } else {
-            if (!this.storage[to_user]) {
-                this.storage[to_user] = [];
-            }
-            this.storage[to_user].push({
-                direction: "sent",
-                message: message
-            });
-        }
-        
-        this.save();
-    }
-
-
-    save() {
-        localStorage.setItem(LOCALSOTRAGE_KEY + this.us, JSON.stringify(this.storage));
-        // console.log(this.storage)
-    }
-
-    load() {
-        this.storage = JSON.parse(localStorage.getItem(LOCALSOTRAGE_KEY + this.us));
-        if (!this.storage) {
-            this.storage = {};
-        }
-    }
-
-
-
+  load() {
+    // initialize indexedDB
+    const request = indexedDB.open(LOCALSTORAGE_KEY, 1);
+    request.onerror = (e) => {
+      console.log("error opening indexedDB");
+    };
+    request.onsuccess = (e) => {
+      this.db = e.target.result;
+      this.db.onerror = (e) => {
+        console.log("error opening indexedDB");
+      };
+    };
+    request.onupgradeneeded = (e) => {
+      const db = e.target.result;
+      const objectStore = db.createObjectStore("chat", {
+        keyPath: "id",
+        autoIncrement: true,
+      });
+      objectStore.createIndex("from_to_user", ["from_user", "to_user"], {
+        unique: false,
+      });
+      objectStore.createIndex("timestamp", "timestamp", { unique: false });
+      objectStore.createIndex("message", "message", { unique: false });
+    };
+  }
 }
 
 export default ChatStorage;

@@ -11,8 +11,8 @@ root.render(
   <ChakraProvider>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Chat/>} />
-        <Route path="/login" element={ <Login /> } />
+        <Route path="/" element={ <Login /> } />
+        <Route path="/chat" element={<Chat/>} />
         <Route path="/signup" element={ <Signup /> } />
         <Route path="*" element={<Heading>404</Heading>} />
       </Routes>
