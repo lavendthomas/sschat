@@ -27,8 +27,15 @@ const FriendsList = (props) => {
             })
         }, [refreshFriendsList]);
 
+    const handleFriendClick = (friend) => {
+        console.log("selected friend: ", friend);
+        props.setSelectedUser(friend);
+    }
+
+    const handleFriendClickGenerator = (friend) => () => handleFriendClick(friend);
+
     const RenderFriends = () => {
-        return friendsList.map(friend => <li>{friend}</li>)
+        return friendsList.map(friend => <li onClick={handleFriendClickGenerator(friend)}>{friend}</li>)
     }
 
     const addFriend = (e) => {

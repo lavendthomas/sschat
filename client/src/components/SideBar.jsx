@@ -28,7 +28,7 @@ const StatusCircle = ({ status }) => {
   )
 };
 
-export default function Sidebar(){
+export default function Sidebar (props) {
   const bg = useColorModeValue('gray.100', 'gray.700');
 
   // const [friendsList, setFriendsList] = useState([]);
@@ -62,7 +62,7 @@ export default function Sidebar(){
           Friend List
         </Text>
       </Center>
-      <FriendsList />
+      <FriendsList setSelectedUser={props.setSelectedUser} />
       {/* {friendsList.map((friend) => (
         <Center key={friend.name}>
           <Link

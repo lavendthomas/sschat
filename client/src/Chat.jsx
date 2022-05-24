@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SideBar from "./components/SideBar";
 import ChatInput from "./components/ChatInput";
 import ChatArea from "./components/ChatArea";
@@ -12,9 +12,11 @@ const Chat = () => {
     const [chatStorage, setChatStorage] = useState(new ChatStorage(localStorage.getItem("whoami")));
     const [refresh, setRefresh] = useState(false);
 
+    useEffect(() => {}, [selectedUser])
+
     return (
         <Flex>
-            <SideBar />
+            <SideBar setSelectedUser={setSelectedUser} />
             <Spacer />
             <VStack alignSelf={'center'} width={'60%'}>
                 <Heading>{selectedUser}</Heading>
