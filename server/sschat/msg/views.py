@@ -29,7 +29,9 @@ def are_friends(a_profile: Profile, b_profile: Profile):
     return Friendships.objects.filter(user=a_profile, friend=b_profile, user_accepted=True, friend_accepted=True) \
         or Friendships.objects.filter(user=b_profile, friend=a_profile, user_accepted=True, friend_accepted=True)
 
-
+def pending_friend_request(a_profile: Profile, b_profile: Profile):
+    return Friendships.objects.filter(user=a_profile, friend=b_profile, user_accepted=True, friend_accepted=False) \
+        or Friendships.objects.filter(user=b_profile, friend=a_profile, user_accepted=True, friend_accepted=False)
 
 # Create your views here.
 
@@ -150,10 +152,14 @@ def ask_friend(request):
     user = Profile.objects.get(user=request.user)
 
     # Check if this user is already a friend
-    if Friendships.objects.filter(user=user).filter(friend=friend).exists():
+    if are_friends(user, friend):
         return HttpResponse("You are already friends!")
-    if Friendships.objects.filter(user=friend).filter(friend=user).exists():
-        return HttpResponse("You are already friends!")
+    if pending_friend_request(user, friend):
+        if Friendships.objects.filter(user=user, friend=friend, user_accepted=True, friend_accepted=False):
+            return HttpResponse("You already sent a friend request to this user!")
+        else:
+            # let's accept the friend request
+            accept_friend(request)
     
 
     # Everything is ok, create the friendship
