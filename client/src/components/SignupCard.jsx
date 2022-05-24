@@ -18,7 +18,7 @@ import { clearCsrfToken } from '../Utils';
   
 export default function SimpleCard() {
   
-    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
     const navigate = useNavigate();
@@ -28,24 +28,24 @@ export default function SimpleCard() {
         openpgp.generateKey({
             type: 'ecc', // Type of the key, defaults to ECC
             curve: 'curve25519', // ECC curve name, defaults to curve25519
-            userIDs: [{name: email, email: email}], 
+            userIDs: [{name: username}], 
             passphrase: password,
             format: 'armored'},)
         .then((key) => {
             console.debug(key);
-            console.debug(email, password);
+            console.debug(username, password);
 
             // Store the web using WebStorage
-            localStorage.setItem(GLOBALS.WEBSTORAGE_KEYPAIR_ENTRY_PREFIX + email, JSON.stringify(key));
+            localStorage.setItem(GLOBALS.WEBSTORAGE_KEYPAIR_ENTRY_PREFIX + username, JSON.stringify(key));
             console.debug("Stored keypair in localStorage");
-            localStorage.setItem("whoami", email);
+            localStorage.setItem("whoami", username);
             GLOBALS.PGP_KEY_PASSWORD = password; // Store the password in a global variable so that the chat can decrypt the messages
 
             // Register with out new public key
             fetch("http://localhost:8000/msg/sign_up", {
               method: "POST",
               body: JSON.stringify({
-                  user: email,
+                  user: username,
                   password: password,
                   public_pgp_key: key.publicKey,
                   }),
@@ -76,8 +76,8 @@ export default function SimpleCard() {
             p={8}>
             <Stack spacing={4}>
               <FormControl id="email">
-                <FormLabel>Email address</FormLabel>
-                <Input type="email" focusBorderColor='gray.400' onChange={e => setEmail(e.currentTarget.value)} />
+                <FormLabel>Username</FormLabel>
+                <Input type="username" focusBorderColor='gray.400' onChange={e => setUsername(e.currentTarget.value)} />
               </FormControl>
               <FormControl id="password">
                 <FormLabel>Password</FormLabel>
@@ -95,7 +95,7 @@ export default function SimpleCard() {
                   Sign up
                 </Button>
               </Stack>
-              <Text>Already have an account ?  {' '} <Link onClick={() => navigate("/login")}>Login here</Link>.</Text>
+              <Text>Already have an account ?  {' '} <Link onClick={() => navigate("/")}>Login here</Link>.</Text>
             </Stack>
           </Box>
         </Stack>

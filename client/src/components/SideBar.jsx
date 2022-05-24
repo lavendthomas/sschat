@@ -57,11 +57,7 @@ export default function Sidebar (props) {
       borderRightColor={useColorModeValue('gray.200', 'gray.700')}
       padding={'1em'}
       h="full">
-      <Center>
-        <Text fontSize="2xl" fontWeight="bold" paddingBottom={'1em'}>
-          Friend List
-        </Text>
-      </Center>
+      
       <FriendsList setSelectedUser={props.setSelectedUser} />
       {/* {friendsList.map((friend) => (
         <Center key={friend.name}>
