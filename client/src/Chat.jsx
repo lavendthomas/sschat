@@ -8,7 +8,7 @@ import ChatStorage from "./core/ChatStorage";
 
 const Chat = () => {
 
-    const [selectedUser, setSelectedUser] = useState("test7@example.com");
+    const [selectedUser, setSelectedUser] = useState("");
     const [chatStorage, setChatStorage] = useState(new ChatStorage(localStorage.getItem("whoami")));
     const [refresh, setRefresh] = useState(false);
 
@@ -17,13 +17,16 @@ const Chat = () => {
     return (
         <Flex>
             <SideBar setSelectedUser={setSelectedUser} />
-            <Spacer />
-            <VStack alignSelf={'center'} width={'60%'}>
-                <Heading>{selectedUser}</Heading>
-                <ChatArea peer_username={selectedUser} chatStorage={chatStorage} refresh={refresh}/>
-                <ChatInput peer_username={selectedUser} chatStorage={chatStorage} refresh={refresh} setRefresh={setRefresh} />
-            </VStack>
-            <Spacer />
+                <Spacer />
+                <VStack alignSelf={'center'} width={'60%'}>
+                    {selectedUser === "" ? <p>Please choose a friend to start a chat.</p> :
+                    <div>
+                        <Heading>{selectedUser}</Heading>
+                        <ChatArea peer_username={selectedUser} chatStorage={chatStorage} refresh={refresh}/>
+                        <ChatInput peer_username={selectedUser} chatStorage={chatStorage} refresh={refresh} setRefresh={setRefresh} />    
+                    </div>}
+                </VStack>
+                <Spacer />
         </Flex>
     );
 };
