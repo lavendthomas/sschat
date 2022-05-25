@@ -42,6 +42,28 @@ export default function Sidebar(props) {
   const [user, setUser] = useState(localStorage.getItem("whoami"));
   const [securityCode, setSecurityCode] = useState("");
 
+  const signOut = () => {
+    getCsrfToken().then((csrfToken) => {
+      fetch("/api/sign_out", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-TOKEN": csrfToken,
+        },
+      })
+        .then((res) => {
+          if (res.status === 200) {
+            props.setSelectedUser(null);
+            localStorage.removeItem("whoami");
+            navigate("/");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  };
+
   useEffect(() => {
     PublicKeyStorage.getSecurityCode(user).then((code) => {
       setSecurityCode(code);
@@ -58,19 +80,17 @@ export default function Sidebar(props) {
       <Button
         leftIcon={<LockIcon />}
         onClick={() => {
-          props.setSelectedUser(null);
-          localStorage.removeItem("whoami");
-          navigate("/");
+          signOut();
         }}
       >
         Logout
       </Button>
-      <Center paddingTop={'1em'} paddingBottom={'1em'}>
-              <HStack>
-                <Text fontSize="xl">{user}</Text>
-                <Text fontSize="sm">#{securityCode}</Text>
-              </HStack>
-            </Center>
+      <Center paddingTop={"1em"} paddingBottom={"1em"}>
+        <HStack>
+          <Text fontSize="xl">{user}</Text>
+          <Text fontSize="sm">#{securityCode}</Text>
+        </HStack>
+      </Center>
       <FriendsList setSelectedUser={props.setSelectedUser} />
     </Box>
   );

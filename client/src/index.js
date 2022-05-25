@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
-import ReactDOM from 'react-dom/client';
+import React from 'react';
+import { createRoot } from 'react-dom/client';
 import { ChakraProvider, Heading } from '@chakra-ui/react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Login from './Login';
 import Signup from './Signup';
 import Chat from './Chat';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const container = document.getElementById('root');
+const root = createRoot(container);
 
 const password = {
   password: "",

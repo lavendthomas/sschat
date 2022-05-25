@@ -83,7 +83,7 @@ const FriendsList = (props) => {
     return friendsList
       .map((details) => details.name)
       .map((friend) => (
-        <HStack>
+        <HStack key={friend}>
           <Text cursor={"pointer"} onClick={handleFriendClickGenerator(friend)}>
             {friend}
           </Text>
