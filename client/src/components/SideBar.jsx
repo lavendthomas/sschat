@@ -16,6 +16,7 @@ import {
   HStack,
   Button,
   VStack,
+  Heading,
 } from "@chakra-ui/react";
 
 import { LockIcon } from "@chakra-ui/icons";
@@ -57,7 +58,8 @@ export default function Sidebar(props) {
       h="full"
     > 
       <HStack>
-        <Text>{user}#{securityCode}</Text  >
+        <Heading>{user}</Heading>
+        <Text>#{securityCode}</Text>
         <Button
           leftIcon={<LockIcon />}
           onClick={() => {
