@@ -16,4 +16,8 @@ function getPassword(onPasswordPromptOpen) {
     }
 }
 
+export function setGlobalPassword(password) {
+    GLOBALS.PGP_KEY_PASSWORD = password;
+}
+
 export default getPassword;

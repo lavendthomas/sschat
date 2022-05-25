@@ -10,31 +10,32 @@ import {
   HStack,
   Text,
   Container,
-  useDisclosure
+  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Input,
+  Button
 } from "@chakra-ui/react";
 
-import { useNavigate } from "react-router-dom";
+import { setGlobalPassword } from "./core/GlobalVariables";
 
 import ChatStorage from "./core/ChatStorage";
 import { PublicKeyStorage } from "./core/PublicKeyStorage";
 
 const Chat = (props) => {
-  const navigate = useNavigate();
-  if (props.password.password == "") {
-    navigate("/"); // login
-  } else {
-    console.log("password: ", props.password.password)
-  }
-
   const [selectedUser, setSelectedUser] = useState("");
   const [securityCode, setSecurityCode] = useState("");
   const [chatStorage, setChatStorage] = useState(
     new ChatStorage(localStorage.getItem("whoami"))
   );
   const [refresh, setRefresh] = useState(false);
+  const [password, setPassword] = useState(props.password.password);
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
+  const { isOpen, onOpen, onClose } = useDisclosure({defaultIsOpen: false});
 
   useEffect(() => {
     console.log("code for friend", selectedUser);
@@ -43,6 +44,18 @@ const Chat = (props) => {
     });
   }, [selectedUser]);
 
+  useEffect(() => {
+    if (props.password.password === "") {
+      onOpen();
+    }
+  }, [refresh]);
+
+  const handleOnPasswordPromptOk = () => {
+    props.password.password = password;
+    setGlobalPassword(password);
+    setPassword("");
+    onClose();
+  }
   return (
     <Flex>
       <SideBar setSelectedUser={setSelectedUser} />
@@ -62,23 +75,45 @@ const Chat = (props) => {
               peer_username={selectedUser}
               chatStorage={chatStorage}
               refresh={refresh}
-              isPasswordPromptOpen={isOpen}
-              onPasswordPromptOpen={onOpen}
-              onPasswordPromptClose={onClose}
             />
             <ChatInput
               peer_username={selectedUser}
               chatStorage={chatStorage}
               refresh={refresh}
               setRefresh={setRefresh}
-              isPasswordPromptOpen={isOpen}
-              onPasswordPromptOpen={onOpen}
-              onPasswordPromptClose={onClose}
+              password={props.password.password}
             />
           </Container>
         )}
       </VStack>
       <Spacer />
+      <>
+        <Modal
+          isOpen={isOpen}
+          onClose={onClose}
+          closeOnOverlayClick={false}
+          closeOnEsc={false}
+        >
+          <ModalOverlay />
+          <ModalContent alignContent={"center"}>
+            <ModalHeader>Please enter your account password</ModalHeader>
+            <ModalBody>
+              Your password will be used to decrypt your messages.
+            </ModalBody>
+            <Center>
+            <Input width={'80%'} type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+            </Center>
+            <ModalFooter>
+              <Button
+                mr={3}
+                onClick={handleOnPasswordPromptOk}
+              >
+                OK
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </>
     </Flex>
   );
 };

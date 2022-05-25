@@ -21,4 +21,4 @@ sudo dnf install python3-devel
 - Do not decrypt every messages all the time.
 - Add logs.
 - HTTPS
-- Modal for password prompt or a better way to keep the password at login
+<!-- - Modal for password prompt or a better way to keep the password at login -->
