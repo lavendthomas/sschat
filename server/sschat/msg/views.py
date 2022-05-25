@@ -1,5 +1,6 @@
 import json
 import logging
+from datetime import datetime
 
 from django.forms import ValidationError
 from django.http import HttpResponse, JsonResponse
@@ -32,6 +33,13 @@ def are_friends(a_profile: Profile, b_profile: Profile):
 def pending_friend_request(a_profile: Profile, b_profile: Profile):
     return Friendships.objects.filter(user=a_profile, friend=b_profile, user_accepted=True, friend_accepted=False) \
         or Friendships.objects.filter(user=b_profile, friend=a_profile, user_accepted=True, friend_accepted=False)
+
+def pending_or_are_friends(a_profile: Profile, b_profile: Profile):
+    if friendship := Friendships.objects.get(user=a_profile, friend=b_profile):
+        return friendship
+    else:
+        return Friendships.objects.get(user=b_profile, friend=a_profile)
+
 
 # Create your views here.
 
@@ -203,18 +211,22 @@ def reject_friend(request):
     user = Profile.objects.get(user=request.user)
 
     # Check if the user has a friendship with this friend
-    pending_friendship = Friendships.objects.get(user=friend, friend=user)
+    pending_friendship = pending_or_are_friends(user, friend)
+    # delete old messages in queue
+    MessageQueue.objects.filter(sender=user, recipient=friend).delete()
+    MessageQueue.objects.filter(sender=friend, recipient=user).delete()
 
     if (pending_friendship is None):
         other_friendship = Friendships.objects.get(user=user, friend=friend)
         if (other_friendship is None):
-            return HttpResponse("You are not friends with this user!")
+            return JsonResponse({"message":"You are not friends with this user!"})
         else:
             other_friendship.delete()
-            return HttpResponse("Friendship rejected!")
+            return JsonResponse({"message":"Friendship rejected!"})
     else:
         pending_friendship.delete()
-        return HttpResponse("Friendship rejected!")
+        return JsonResponse({"message":"Friendship rejected!"})
+
 
 @login_required(login_url='/login')
 def send_message(request):
@@ -251,11 +263,12 @@ def get_messages(request):
 
     # Get all the messages that the user has received
     received_messages = MessageQueue.objects.filter(recipient=user_profile)
-    received_messages = list(map(lambda msg: {"sender" : msg.sender.user.username, "message": msg.message, "id": msg.id}, received_messages))
+    received_messages_list = list(map(lambda msg: {"sender" : msg.sender.user.username, "message": msg.message, "id": msg.id, "timestamp":datetime.fromisoformat(str(msg.sent_at)).timestamp()}, received_messages))
 
-    # TODO remove all these messages
+    # remove all these messages
+    received_messages.delete()
 
-    return JsonResponse({"received": received_messages})
+    return JsonResponse({"received": received_messages_list})
 
 
 @login_required(login_url='/login')

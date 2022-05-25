@@ -63,7 +63,8 @@ export default function ChatInput(props) {
     props.chatStorage.add_message(
       me,
       props.peer_username,
-      encrypted_to_ourselves
+      encrypted_to_ourselves,
+      new Date().getTime() / 1000
     );
     props.setRefresh(!props.refresh);
     setMessage("");

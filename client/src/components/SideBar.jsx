@@ -43,12 +43,10 @@ export default function Sidebar(props) {
   const [securityCode, setSecurityCode] = useState("");
 
   useEffect(() => {
-    PublicKeyStorage.getSecurityCode(user).then(
-      (code) => {
-        setSecurityCode(code);
-      }
-    )
-  }, [user])
+    PublicKeyStorage.getSecurityCode(user).then((code) => {
+      setSecurityCode(code);
+    });
+  }, [user]);
 
   return (
     <Box
@@ -56,21 +54,23 @@ export default function Sidebar(props) {
       borderRightColor={useColorModeValue("gray.200", "gray.700")}
       padding={"1em"}
       h="full"
-    > 
-      <HStack>
-        <Heading>{user}</Heading>
-        <Text>#{securityCode}</Text>
-        <Button
-          leftIcon={<LockIcon />}
-          onClick={() => {
-            props.setSelectedUser(null);
-            localStorage.removeItem("whoami");
-            navigate("/");
-          }}
-        >
-          Logout
-        </Button>
-      </HStack>
+    >
+      <Button
+        leftIcon={<LockIcon />}
+        onClick={() => {
+          props.setSelectedUser(null);
+          localStorage.removeItem("whoami");
+          navigate("/");
+        }}
+      >
+        Logout
+      </Button>
+      <Center paddingTop={'1em'} paddingBottom={'1em'}>
+              <HStack>
+                <Text fontSize="xl">{user}</Text>
+                <Text fontSize="sm">#{securityCode}</Text>
+              </HStack>
+            </Center>
       <FriendsList setSelectedUser={props.setSelectedUser} />
     </Box>
   );

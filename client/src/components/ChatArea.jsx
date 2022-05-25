@@ -33,19 +33,26 @@ export default function ChatInput(props) {
   useEffect(() => {
     // updateMessageList();
     console.log("ChatInput useEffect", messageList);
-    messageList.map((msg) => {
-      console.log("msg", msg.value.message);
-      decryptMessage(msg.value.message).then((decryptedMessage) => {
-        setDecryptedMessageList((prev) => [
-          ...prev,
-          {
-            direction:
-              msg.id[1] == localStorage.getItem("whoami") ? "received" : "sent",
-            message: decryptedMessage,
-          },
-        ]);
+    messageList
+      .filter((msg) =>
+        !decryptedMessageList.map((m) => m.timestamp).includes(msg.timestamp)
+      )
+      .map((msg) => {
+        console.log("msg", msg);
+        decryptMessage(msg.message).then((decryptedMessage) => {
+          setDecryptedMessageList((prev) => [
+            ...prev,
+            {
+              direction:
+                msg.to_user == localStorage.getItem("whoami")
+                  ? "received"
+                  : "sent",
+              message: decryptedMessage,
+              timestamp: msg.timestamp,
+            },
+          ]);
+        });
       });
-    });
   }, [messageList]);
 
   const decryptMessage = async (message) => {
@@ -92,7 +99,8 @@ export default function ChatInput(props) {
         props.chatStorage.add_message(
           msg.sender,
           localStorage.getItem("whoami"),
-          msg.message
+          msg.message,
+          msg.timestamp
         );
       });
       await props.chatStorage.get_messages(
@@ -124,8 +132,9 @@ export default function ChatInput(props) {
   return (
     <Box
       width={"100%"}
+      // minWidth={""}
       height={"80vh"}
-      marginTop={"2em"}
+      marginTop={".25em"}
       borderWidth="1px"
       borderRadius="lg"
       overflow="hidden"
@@ -134,28 +143,6 @@ export default function ChatInput(props) {
       <Button leftIcon={<SpinnerIcon />} onClick={refreshMessages}>
         Refresh
       </Button>
-      <Box
-        margin={"1em"}
-        width={"50%"}
-        borderWidth="1px"
-        borderRadius="lg"
-        overflow="hidden"
-        bg={greeBubbleColor}
-      >
-        <Text margin={".25em"}>Hello !</Text>
-      </Box>
-      <Box
-        margin={"1em"}
-        width={"50%"}
-        borderWidth="1px"
-        borderRadius="lg"
-        overflow={"auto"}
-        bg={grayBubbleColor}
-      >
-        <Text margin={".25em"}>
-          Quidem, ipsam illum quis sed voluptatum quae eum fugit earum !
-        </Text>
-      </Box>
       <ShowMessages />
       <div ref={messagesEndRef} />
     </Box>

@@ -9,7 +9,7 @@ function getSecurityCode(user) {
         const our_public_key = JSON.parse(localStorage.getItem(GLOBALS.WEBSTORAGE_KEYPAIR_ENTRY_PREFIX + user)).publicKey;
         return generateCodeFromPublicKey(our_public_key);
     } else {
-        const their_public_key = 
+        const their_public_key = JSON.parse(localStorage.getItem(GLOBALS.WEBSTORAGE_KEYPAIR_ENTRY_PREFIX + user)).publicKey;
         return generateCodeFromPublicKey(their_public_key);
     }
 }
