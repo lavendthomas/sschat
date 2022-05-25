@@ -43,7 +43,6 @@ export class PublicKeyStorage {
         const hashBuffer = await window.crypto.subtle.digest("SHA-256", new TextEncoder().encode(publicKey));
         const hashArray = Array.from(new Uint8Array(hashBuffer));
         const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        console.log(hashHex);
         return hashHex.substring(0, 6);
     }
 

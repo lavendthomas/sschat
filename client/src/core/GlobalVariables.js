@@ -1,6 +1,7 @@
 
 export let GLOBALS = {
     WEBSTORAGE_KEYPAIR_ENTRY_PREFIX: 'keypair-',
+    WEBSTORAGE_PUBLIC_KEY_ENTRY_PREFIX: 'public-key-',
     PGP_KEY_PASSWORD: "",  // Security ? Use a canary ?
 }
 
