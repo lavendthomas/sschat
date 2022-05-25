@@ -18,7 +18,7 @@ import { PGP_KEY_PASSWORD, CHAT_STORAGE } from "./../Chat";
 import ChatStorage from "../core/ChatStorage";
 import { GLOBALS } from "../core/GlobalVariables";
 
-export default function LoginCard() {
+export default function LoginCard(props) {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -29,6 +29,7 @@ export default function LoginCard() {
     getCsrfToken().then(csrfToken => {
         e.preventDefault();
         GLOBALS.PGP_KEY_PASSWORD = password; // Store the password in a global variable so that the chat can decrypt the messages
+        props.password.password = password
         localStorage.setItem("whoami", username);
         fetch("http://localhost:8000/msg/sign_in", {
             method: "POST",

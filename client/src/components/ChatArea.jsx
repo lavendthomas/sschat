@@ -32,13 +32,11 @@ export default function ChatInput(props) {
 
   useEffect(() => {
     // updateMessageList();
-    console.log("ChatInput useEffect", messageList);
     messageList
       .filter((msg) =>
         !decryptedMessageList.map((m) => m.timestamp).includes(msg.timestamp)
       )
       .map((msg) => {
-        console.log("msg", msg);
         decryptMessage(msg.message).then((decryptedMessage) => {
           setDecryptedMessageList((prev) => [
             ...prev,
@@ -113,7 +111,6 @@ export default function ChatInput(props) {
 
   const ShowMessages = () => {
     return decryptedMessageList.map((msg) => {
-      console.log(msg);
       return (
         <Box
           margin={"1em"}

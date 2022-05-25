@@ -16,7 +16,7 @@ import * as openpgp from 'openpgp';
 import { GLOBALS } from "../core/GlobalVariables";
 import { clearCsrfToken } from '../Utils';
   
-export default function SimpleCard() {
+export default function SimpleCard(props) {
   
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -40,6 +40,7 @@ export default function SimpleCard() {
             console.debug("Stored keypair in localStorage");
             localStorage.setItem("whoami", username);
             GLOBALS.PGP_KEY_PASSWORD = password; // Store the password in a global variable so that the chat can decrypt the messages
+            props.password.password = password;
 
             // Register with out new public key
             fetch("http://localhost:8000/msg/sign_up", {

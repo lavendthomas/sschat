@@ -2,10 +2,10 @@ import React from "react";
 import LoginCard from "./components/LoginCard";
 import FriendsList from "./components/FriendsList";
 
-const Login = () => {
+const Login = (props) => {
     return (
         <div>
-            <LoginCard />
+            <LoginCard password={props.password}/>
             {/* <FriendsList /> */}
         </div>
     );

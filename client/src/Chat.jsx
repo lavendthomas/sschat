@@ -10,18 +10,31 @@ import {
   HStack,
   Text,
   Container,
+  useDisclosure
 } from "@chakra-ui/react";
+
+import { useNavigate } from "react-router-dom";
 
 import ChatStorage from "./core/ChatStorage";
 import { PublicKeyStorage } from "./core/PublicKeyStorage";
 
-const Chat = () => {
+const Chat = (props) => {
+  const navigate = useNavigate();
+  if (props.password.password == "") {
+    navigate("/"); // login
+  } else {
+    console.log("password: ", props.password.password)
+  }
+
   const [selectedUser, setSelectedUser] = useState("");
   const [securityCode, setSecurityCode] = useState("");
   const [chatStorage, setChatStorage] = useState(
     new ChatStorage(localStorage.getItem("whoami"))
   );
   const [refresh, setRefresh] = useState(false);
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
 
   useEffect(() => {
     console.log("code for friend", selectedUser);
@@ -49,12 +62,18 @@ const Chat = () => {
               peer_username={selectedUser}
               chatStorage={chatStorage}
               refresh={refresh}
+              isPasswordPromptOpen={isOpen}
+              onPasswordPromptOpen={onOpen}
+              onPasswordPromptClose={onClose}
             />
             <ChatInput
               peer_username={selectedUser}
               chatStorage={chatStorage}
               refresh={refresh}
               setRefresh={setRefresh}
+              isPasswordPromptOpen={isOpen}
+              onPasswordPromptOpen={onOpen}
+              onPasswordPromptClose={onClose}
             />
           </Container>
         )}

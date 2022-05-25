@@ -5,7 +5,8 @@ export let GLOBALS = {
     PGP_KEY_PASSWORD: "",  // Security ? Use a canary ?
 }
 
-function getPassword() {
+
+function getPassword(onPasswordPromptOpen) {
     if (GLOBALS.PGP_KEY_PASSWORD) {
         return GLOBALS.PGP_KEY_PASSWORD;
     } else {

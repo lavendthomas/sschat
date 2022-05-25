@@ -1,10 +1,22 @@
-import { InputGroup, Input, InputRightElement, Button } from "@chakra-ui/react";
+import { 
+  InputGroup, 
+  Input, 
+  InputRightElement, 
+  Button, 
+  Modal,
+  useDisclosure,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from "@chakra-ui/react";
 import { useState } from "react";
 
 import * as openpgp from "openpgp";
 
 import { fetchApiPost } from "../core/FetchApi";
-import getPassword, { GLOBALS } from "../core/GlobalVariables";
+import getPassword, { GLOBALS, setPassword } from "../core/GlobalVariables";
 import { PublicKeyStorage } from "../core/PublicKeyStorage";
 
 export default function ChatInput(props) {
@@ -70,8 +82,14 @@ export default function ChatInput(props) {
     setMessage("");
   };
 
+  const handleOnPasswordPromptOk = (event) => {
+    console.log(event);
+    props.onPasswordPromptClose(event);
+  }
+
   return (
-    <InputGroup size="md">
+    <div>
+      <InputGroup size="md">
       <Input
         pr="4.5rem"
         placeholder="Type a message..."
@@ -82,7 +100,27 @@ export default function ChatInput(props) {
         <Button h="1.75rem" size="sm" onClick={handleClick}>
           Send
         </Button>
+        <Button onClick={props.onPasswordPromptOpen} h="1.75rem" size="sm">Modal</Button>
       </InputRightElement>
+
+      <Modal isOpen={props.isPasswordPromptOpen} onClose={props.onPasswordPromptClose} closeOnOverlayClick={false} closeOnEsc={false}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Please enter your account password</ModalHeader>
+          <ModalBody>
+            Your password will be used to decrypt your messages.
+          </ModalBody>
+
+          <Input type="password" placeholder="Password" />
+          
+          <ModalFooter>
+            <Button colorScheme='blue' mr={3} onClick={handleOnPasswordPromptOk}>
+              OK
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </InputGroup>
+    </div>
   );
 }

@@ -1,10 +1,10 @@
 import React from "react";
 import SignupCard from "./components/SignupCard";
 
-const Signup = () => {
+const Signup = (props) => {
     return (
         <div>
-            <SignupCard />
+            <SignupCard password={props.password}/>
         </div>
     );
 };
