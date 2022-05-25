@@ -36,11 +36,9 @@ export class PublicKeyStorage {
     }
 
     static get_public_key(user) {
-        console.log("get_public_key before ", user);
         if (!user) {
             return;
         }
-        console.log("get_public_key after", user);
         if (user === localStorage.getItem("whoami")) {
             return JSON.parse(localStorage.getItem(GLOBALS.WEBSTORAGE_KEYPAIR_ENTRY_PREFIX + user)).publicKey;
         } else {
