@@ -1,4 +1,2 @@
 Django
 django-cors-headers
-channels
-channels_redis

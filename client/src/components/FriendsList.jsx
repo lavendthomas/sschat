@@ -16,7 +16,7 @@ const FriendsList = (props) => {
 
   useEffect(() => {
     getCsrfToken().then((csrfToken) => {
-      fetch("http://localhost:8000/msg/friends_list", {
+      fetch("http://localhost:8000/msg/friends_list_detailed", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -28,6 +28,9 @@ const FriendsList = (props) => {
         .then((res) => res.json())
         .then((data) => {
           console.log(data);
+
+          // Check that all PGP keys match
+
           setFriendsList(data);
         });
     });
@@ -42,7 +45,7 @@ const FriendsList = (props) => {
     handleFriendClick(friend);
 
   const RenderFriends = () => {
-    return friendsList.map((friend) => (
+    return friendsList.map((details => details.name)).map((friend) => (
       <li onClick={handleFriendClickGenerator(friend)}>{friend}</li>
     ));
   };

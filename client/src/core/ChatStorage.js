@@ -1,7 +1,6 @@
 const LOCALSTORAGE_KEY = "chat-storage";
 
 class ChatStorage {
-  // TODO use IndexedDB instead
 
   constructor(us) {
     this.us = us;
@@ -9,8 +8,6 @@ class ChatStorage {
     this.load();
     this.db = indexedDB.open(LOCALSTORAGE_KEY, 1);
   }
-
-  get_peers() {}
 
   get_messages(from_user, to_user, updateMessageList) {
     const transaction = this.db.transaction("chat", "readwrite");

@@ -95,7 +95,7 @@ export default function SimpleCard() {
                   Sign up
                 </Button>
               </Stack>
-              <Text>Already have an account ?  {' '} <Link onClick={() => navigate("/")}>Login here</Link>.</Text>
+              <Text>Already have an account ?  {' '} <Link onClick={() => navigate("/chat")}>Login here</Link>.</Text>
             </Stack>
           </Box>
         </Stack>

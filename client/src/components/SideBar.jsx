@@ -1,6 +1,7 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import getCsrfToken from "../Utils";
+import { PublicKeyStorage } from "../core/PublicKeyStorage";
 import FriendsList from "./FriendsList";
 
 import { useNavigate } from "react-router-dom";
@@ -14,7 +15,10 @@ import {
   Circle,
   HStack,
   Button,
+  VStack,
 } from "@chakra-ui/react";
+
+import { LockIcon } from "@chakra-ui/icons";
 
 // const FriendList = [
 //   { name: 'John Doe', status: 'online' },
@@ -34,7 +38,16 @@ export default function Sidebar(props) {
 
   const navigate = useNavigate();
 
-  // const [friendsList, setFriendsList] = useState([]);
+  const [user, setUser] = useState(localStorage.getItem("whoami"));
+  const [securityCode, setSecurityCode] = useState("");
+
+  useEffect(() => {
+    PublicKeyStorage.getSecurityCode(localStorage.getItem(user)).then(
+      (code) => {
+        setSecurityCode(code);
+      }
+    )
+  }, [user])
 
   // useEffect(() => {
   //   getCsrfToken().then(csrfToken => {
@@ -60,16 +73,20 @@ export default function Sidebar(props) {
       borderRightColor={useColorModeValue("gray.200", "gray.700")}
       padding={"1em"}
       h="full"
-    >
-      <Button
-        onClick={() => {
-          props.setSelectedUser(null);
-          localStorage.removeItem("whoami");
-          navigate("/");
-        }}
-      >
-        Logout
-      </Button>
+    > 
+      <HStack>
+        <Text>{user}#{securityCode}</Text  >
+        <Button
+          leftIcon={<LockIcon />}
+          onClick={() => {
+            props.setSelectedUser(null);
+            localStorage.removeItem("whoami");
+            navigate("/");
+          }}
+        >
+          Logout
+        </Button>
+      </HStack>
       <FriendsList setSelectedUser={props.setSelectedUser} />
       {/* {friendsList.map((friend) => (
         <Center key={friend.name}>
