@@ -90,7 +90,6 @@ export default function ChatInput(props) {
         <Button h="1.75rem" size="sm" onClick={handleClick}>
           Send
         </Button>
-        <Button onClick={props.onPasswordPromptOpen} h="1.75rem" size="sm">Modal</Button>
       </InputRightElement>
     </InputGroup>
     </div>

@@ -29,13 +29,12 @@ import { PublicKeyStorage } from "./core/PublicKeyStorage";
 const Chat = (props) => {
   const [selectedUser, setSelectedUser] = useState("");
   const [securityCode, setSecurityCode] = useState("");
-  const [chatStorage, setChatStorage] = useState(
-    new ChatStorage(localStorage.getItem("whoami"))
-  );
   const [refresh, setRefresh] = useState(false);
   const [password, setPassword] = useState(props.password.password);
 
   const { isOpen, onOpen, onClose } = useDisclosure({defaultIsOpen: false});
+
+  const chatStorage = new ChatStorage(localStorage.getItem("whoami"));
 
   useEffect(() => {
     console.log("code for friend", selectedUser);

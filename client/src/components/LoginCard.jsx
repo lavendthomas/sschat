@@ -14,9 +14,7 @@ import getCsrfToken, { clearCsrfToken } from "../Utils";
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { PGP_KEY_PASSWORD, CHAT_STORAGE } from "./../Chat";
-import ChatStorage from "../core/ChatStorage";
-import { GLOBALS } from "../core/GlobalVariables";
+import { setGlobalPassword } from "../core/GlobalVariables";
 
 export default function LoginCard(props) {
 
@@ -28,7 +26,7 @@ export default function LoginCard(props) {
   const handleSubmit = (e) => {
     getCsrfToken().then(csrfToken => {
         e.preventDefault();
-        GLOBALS.PGP_KEY_PASSWORD = password; // Store the password in a global variable so that the chat can decrypt the messages
+        setGlobalPassword(password); // Store the password in a global variable so that the chat can decrypt the messages
         props.password.password = password
         localStorage.setItem("whoami", username);
         fetch("http://localhost:8000/msg/sign_in", {

@@ -18,10 +18,6 @@ export default function ChatInput(props) {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // useEffect(() => {
-  //     console.log("ChatInput useEffect")
-  // }, [props, decryptedMessageList]);
-
   useEffect(() => {
     refreshMessages();
   }, [props.refresh]);
@@ -42,7 +38,7 @@ export default function ChatInput(props) {
             ...prev,
             {
               direction:
-                msg.to_user == localStorage.getItem("whoami")
+                msg.to_user === localStorage.getItem("whoami")
                   ? "received"
                   : "sent",
               message: decryptedMessage,
@@ -50,6 +46,7 @@ export default function ChatInput(props) {
             },
           ]);
         });
+        return msg;
       });
   }, [messageList]);
 
@@ -118,7 +115,7 @@ export default function ChatInput(props) {
           borderWidth="1px"
           borderRadius="lg"
           overflow="hidden"
-          bg={msg.direction == "received" ? greeBubbleColor : grayBubbleColor}
+          bg={msg.direction === "received" ? greeBubbleColor : grayBubbleColor}
         >
           <Text margin={".25em"}>{msg.message}</Text>
         </Box>
