@@ -42,30 +42,12 @@ export default function Sidebar(props) {
   const [securityCode, setSecurityCode] = useState("");
 
   useEffect(() => {
-    PublicKeyStorage.getSecurityCode(localStorage.getItem(user)).then(
+    PublicKeyStorage.getSecurityCode(user).then(
       (code) => {
         setSecurityCode(code);
       }
     )
   }, [user])
-
-  // useEffect(() => {
-  //   getCsrfToken().then(csrfToken => {
-  //       fetch("http://localhost:8000/msg/friends_list_with_connection_status", {
-  //           method: "POST",
-  //           headers: {
-  //               "Content-Type": "application/json",
-  //               "Accept": "*/*",
-  //               "X-CSRFToken": csrfToken,
-  //               },
-  //           credentials: "include",
-  //           })
-  //           .then(res => res.json())
-  //           .then(data => {
-  //               setFriendsList(data);
-  //           });
-  //       })
-  //   }, []);
 
   return (
     <Box
@@ -88,14 +70,6 @@ export default function Sidebar(props) {
         </Button>
       </HStack>
       <FriendsList setSelectedUser={props.setSelectedUser} />
-      {/* {friendsList.map((friend) => (
-        <Center key={friend.name}>
-          <Link
-            _hover={{ bg: bg }}>
-              <HStack><Text>{friend.name}</Text><StatusCircle status={friend.status}/></HStack>
-          </Link>
-        </Center>
-      ))} */}
     </Box>
   );
 }

@@ -14,6 +14,10 @@ export class PublicKeyStorage {
             // We should not update our own public key without regenerating the key pair.
             return false;
         }
+        if (this.get_public_key(other_user) == null) {
+            this._set_public_key(other_user, public_key);
+            return true;
+        }
         if (public_key !== this.get_public_key(other_user)) {
             // TODO security code
             const must_update = window.confirm(`Your local key for ${other_user} doesn't match with the copy from the server. This means that either your local copy was corrupted or tampered with, or the other user has modified his key. You should contact ${other_user} with an out-of-band communication to make sure the key is correct. Its security code is ${9999999} \n\n Update to the new key?`);
@@ -32,10 +36,19 @@ export class PublicKeyStorage {
     }
 
     static get_public_key(user) {
+        console.log("get_public_key before ", user);
+        if (!user) {
+            return;
+        }
+        console.log("get_public_key after", user);
         if (user === localStorage.getItem("whoami")) {
             return JSON.parse(localStorage.getItem(GLOBALS.WEBSTORAGE_KEYPAIR_ENTRY_PREFIX + user)).publicKey;
         } else {
-            return JSON.parse(localStorage.getItem(GLOBALS.WEBSTORAGE_PUBLIC_KEY_ENTRY_PREFIX + user));
+            const key = localStorage.getItem(GLOBALS.WEBSTORAGE_PUBLIC_KEY_ENTRY_PREFIX + user)
+            if (key) {
+                return JSON.parse(key);
+            }
+            return null;
         }
     }
 

@@ -79,7 +79,7 @@ def sign_up(request):
     new_user.save()
     new_profile.save()
 
-    return JsonResponse({"message": "connected" + str(new_user) + "-" + str(new_profile)}, safe=False)
+    return JsonResponse({"message": "connected" + str(new_user) + "-" + str(new_profile)})
 
 def sign_out(request):
     logout(request)
@@ -241,7 +241,7 @@ def send_message(request):
     new_message = MessageQueue.objects.create(sender=user, recipient=to_profile, message=message)
     new_message.save()
 
-    return JsonResponse({"message": "Message sent!"}, safe=False)
+    return JsonResponse({"message": "Message sent!"})
 
 
 @login_required(login_url='/login')

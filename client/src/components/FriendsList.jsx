@@ -7,6 +7,7 @@ import {
   Text
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import { PublicKeyStorage } from "../core/PublicKeyStorage";
 import getCsrfToken from "../Utils";
 
 const FriendsList = (props) => {
@@ -30,6 +31,9 @@ const FriendsList = (props) => {
           console.log(data);
 
           // Check that all PGP keys match
+          data.forEach(friend => {
+            PublicKeyStorage.update(friend.username, friend.public_pgp_key);
+          });
 
           setFriendsList(data);
         });
