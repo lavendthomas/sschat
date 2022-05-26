@@ -13,7 +13,6 @@ services:
         # environement:
         #     - PROXY_API=http://backend:8000
         volumes:
-            - ./client/env/sshchat.umons.ac.be.key:/etc/nginx/sshchat.umons.ac.be.key
-            - ./client/env/sshchat.umons.ac.be.crt:/etc/nginx/sshchat.umons.ac.be.crt
+            - ./client/env/certs:/etc/nginx/certs
         # depends_on:
         #     - backend

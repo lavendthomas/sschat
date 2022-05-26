@@ -9,8 +9,8 @@ RUN npm run build
 RUN apk del nodejs npm
 
 # Copy SSL certificates. Should be volumes?
-# COPY /etc/nginx/sshchat.umons.ac.be.key ./env/sshchat.umons.ac.be.key
-# COPY /etc/nginx/sshchat.umons.ac.be.crt ./env/sshchat.umons.ac.be.crt
+COPY ./env/certs/sshchat.umons.ac.be.key /etc/nginx/certs/sshchat.umons.ac.be.key 
+COPY ./env/certs/sshchat.umons.ac.be.crt /etc/nginx/certs/sshchat.umons.ac.be.crt 
 
 # Prevent Clickjacking
 RUN rm /etc/nginx/nginx.conf && cp /app/nginx.conf /etc/nginx/nginx.conf
