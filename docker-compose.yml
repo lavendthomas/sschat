@@ -1,6 +1,19 @@
 version: "3"
 services:
+    # backend:
+    #     image: localhost/sshcat-server
+    #     ports:
+    #         - "8000:8000"
+    #     environement:
+    #         - SERCRET_KEY=<PUT_YOUR_SECRET_KEY_HERE>
     frontend:
         image: localhost/sschat-client
         ports:
-            - "8080:80"
+            - "8080:443"
+        # environement:
+        #     - PROXY_API=http://backend:8000
+        volumes:
+            - ./client/env/sshchat.umons.ac.be.key:/etc/nginx/sshchat.umons.ac.be.key
+            - ./client/env/sshchat.umons.ac.be.crt:/etc/nginx/sshchat.umons.ac.be.crt
+        # depends_on:
+        #     - backend

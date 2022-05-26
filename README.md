@@ -30,7 +30,11 @@ Use nginx to serve the html files
 
 ### Steps
 
-- Set up the X-Frame-Options https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options#configuring_nginx   add_header X-Frame-Options SAMEORIGIN always;
+- Regenerate the SECRET_KEY in `server/sschat/settings/py` by changing its value to the output of `python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"`.
+
+- Generate a Self-Signed Certificate: `openssl req -newkey rsa:2048 -nodes -keyout sshchat.umons.ac.be.key -x509 -days 365 -out sshchat.umons.ac.be.key.crt`
+
+<!-- - Set up the X-Frame-Options https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options#configuring_nginx   add_header X-Frame-Options SAMEORIGIN always; -->
 - Set up the logs https://docs.nginx.com/nginx/admin-guide/monitoring/logging/ ¡DONT INCLUDE MESSAGES!  
 - Reverse proxy for the API
 
