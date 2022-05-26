@@ -7,6 +7,7 @@ import * as openpgp from "openpgp";
 
 import { fetchApiPost } from "../core/FetchApi";
 import getPassword, { GLOBALS } from "../core/GlobalVariables";
+import { PublicKeyStorage } from "../core/PublicKeyStorage";
 
 export default function ChatInput(props) {
   const [decryptedMessageList, setDecryptedMessageList] = useState([]);
@@ -33,7 +34,7 @@ export default function ChatInput(props) {
         !decryptedMessageList.map((m) => m.timestamp).includes(msg.timestamp)
       )
       .map((msg) => {
-        decryptMessage(msg.message).then((decryptedMessage) => {
+        decryptMessage(msg).then((decryptedMessage) => {
           setDecryptedMessageList((prev) => [
             ...prev,
             {
@@ -53,6 +54,14 @@ export default function ChatInput(props) {
   const decryptMessage = async (message) => {
     const me = localStorage.getItem("whoami");
 
+    const armoured_other_public_key = PublicKeyStorage.get_public_key(
+      message.from_user
+    );
+
+    const other_public_key = await openpgp.readKey({
+      armoredKey: armoured_other_public_key,
+    })
+
     const our_private_key = await openpgp.decryptKey({
       privateKey: await openpgp.readKey({
         armoredKey: JSON.parse(
@@ -63,24 +72,18 @@ export default function ChatInput(props) {
     });
 
     const pgp_message = await openpgp.readMessage({
-      armoredMessage: message, // parse armored message
+      armoredMessage: message.message, // parse armored message
     });
-
-    // console.log("to decrypt", message)
-    // console.log("our_private_key", our_private_key)
-    // console.log("pgp_message", pgp_message)
 
     const decrypted = await openpgp.decrypt({
       message: pgp_message,
       decryptionKeys: our_private_key,
       config: { preferredCompressionAlgorithm: openpgp.enums.compression.zlib },
+      expectSigned: true,
+      verificationKeys: other_public_key
     });
 
-    // console.log("decrypted", decrypted)
-
-    // TODO check that the message is signed
-    // decryptionKeys: privateKey,
-    // expectSigned: true,
+    console.log("decrypted was signed", decrypted);
 
     return decrypted.data;
   };
