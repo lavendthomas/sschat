@@ -31,12 +31,14 @@ ALLOWED_HOSTS = []
 CORS_ALLOWED_ORIGINS = [
 "http://localhost:3000",
 "http://127.0.0.1:3000",
+"http://localhost:8080",
 "http://127.0.0.1:47730",
 "http://localhost:47730",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
 "http://localhost:3000",
+"http://localhost:8080",
 ]
 
 CSRF_COOKIE_HTTPONLY = False # To access it from the fetch API
