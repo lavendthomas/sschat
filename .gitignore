@@ -1,3 +1,6 @@
+# environment
+client/env/
+
 # HTTP tests
 *.http
 
