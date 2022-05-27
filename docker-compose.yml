@@ -2,12 +2,10 @@ version: "3"
 services:
     backend:
         image: localhost/sschat-server
-        # ports: # don't allow access to the outside world
-        #     - "8000:8000"
         environment:
             - SECRET_KEY=${SECRET_KEY}
         # volumes:
-            # - "db.sqlite3:/app/sschat/db.sqlite3"
+        #     - ./database:/app/database/
     frontend:
         image: localhost/sschat-client
         ports:
@@ -15,7 +13,7 @@ services:
         environment:
             - PROXY_API=http://backend:8000
         # volumes:
-        #     - ./logs/:/var/log/nginx/
+            # - logs/:/var/log/nginx/
             # - ./clients/env/certs/:/etc/nginx/certs/
         depends_on:
             - backend

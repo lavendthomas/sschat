@@ -44,7 +44,7 @@ export default function Sidebar(props) {
 
   const signOut = () => {
     getCsrfToken().then((csrfToken) => {
-      fetch("/api/sign_out", {
+      fetch("/api/msg/sign_out", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

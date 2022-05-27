@@ -3,7 +3,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.index, name='index'),
     path('csrf', views.csrf, name='csrf'),
     path('sign_up', views.sign_up, name='sign_up'),
     path('sign_in', views.sign_in, name='sign_in'),
@@ -12,8 +11,6 @@ urlpatterns = [
     path('friends_list', views.friends_list, name='friends_list'),
     path('friends_list_detailed', views.friends_list_detailed, name='friends_list_detailed'),
     path('get_pgp_key', views.get_pgp_key, name='get_pgp_key'),
-    path('connected_friends', views.connected_friends, name='connected_friends'),
-    path('friends_requests', views.friends_requests, name='friends_requests'),
     path('ask_friend', views.ask_friend, name='ask_friend'),
     path('accept_friend', views.accept_friend, name='accept_friend'),
     path('reject_friend', views.reject_friend, name='reject_friend'),

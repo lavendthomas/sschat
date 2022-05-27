@@ -53,7 +53,7 @@ export default function SimpleCard(props) {
               })
             .then(response => response.json())
             .then(data => {
-                alert(JSON.stringify(data));
+                alert("Account created. Please re-login.");
                 // console.log(data);
                 clearCsrfToken();
                 // Go tho the chat page

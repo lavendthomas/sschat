@@ -47,9 +47,6 @@ def _validate_sign_in(request):
     # Log here!
     raise ValidationError("Invalid request!")
 
-# Create your views here.
-def index(request):
-    return HttpResponse("Hello, world. You're at the polls index.")
 
 
 def sign_in(request):
@@ -89,10 +86,12 @@ def sign_up(request):
 
     return JsonResponse({"message": "connected" + str(new_user) + "-" + str(new_profile)})
 
+@login_required(login_url='/login')
 def sign_out(request):
     logout(request)
     return HttpResponse("disconnected")
 
+@login_required(login_url='/login')
 def whoami(request):
     return JsonResponse({"user" : request.user.username}, safe=False)
 
@@ -126,25 +125,7 @@ def friends_list_detailed(request):
 
     return JsonResponse(friends_list, safe=False)
 
-@login_required(login_url='/login')
-def connected_friends(request):
-    user = Profile.objects.get(user=request.user)
 
-    # let's get all the friends of the user (where both accepted the friendship)
-    friends_list = list(Friendships.objects.filter(user=user).filter(user_accepted=True).filter(friend_accepted=True).values_list('friend'))
-    friends_list.extend(list(Friendships.objects.filter(friend=user).filter(user_accepted=True).filter(friend_accepted=True).values_list('user')))
-
-    connected_friends = list(filter(lambda id: Profile.objects.get(id=id[0]).is_client_connected, friends_list))
-
-    connected_friends = list(map(lambda id: (Profile.objects.get(id=id[0]).user.username, Profile.objects.get(id=id[0]).ip_address), connected_friends))
-
-    return HttpResponse("Your friends are: " + str(connected_friends))
-
-@login_required(login_url='/login')
-def friends_requests(request):
-    # Get the requests of the user
-    friends_requests = Friendships.objects.filter(user=request.user).filter(user_accepted=False)
-    return HttpResponse("Your friends requests are: " + str(friends_requests))
 
 
 @login_required(login_url='/login')
