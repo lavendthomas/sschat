@@ -23,6 +23,8 @@ sudo dnf install python3-devel
 - HTTPS
 <!-- - Modal for password prompt or a better way to keep the password at login -->
 - We NEED to throttle requests to authenticate users!
+- Look if we can patch the security vulnerabilities
+- Do not forward to /chat if not loggined in
 
 ## Deployment
 

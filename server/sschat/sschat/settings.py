@@ -21,26 +21,33 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-4-%#1$^wvqwhw#(ni6yv(nsu6!7=2ln^$189zgleox3v(h)$k*'
+SECRET_KEY = os.environ["SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = [
-    "https://localhost:8080",
-    "http://localhost:3000"
-]
+# ALLOWED_HOSTS = [
+#     ""https://localhost:8080",
+#     "http://localhost:3000""
+# ]
+ALLOWED_HOSTS = ["*"]
 
-CORS_ALLOWED_ORIGINS = [
-"http://localhost:3000",
-"http://127.0.0.1:3000",
-"https://localhost:8080",
-]
 
-CSRF_TRUSTED_ORIGINS = [
-"http://localhost:3000",
-"https://localhost:8080",
-]
+# CORS_ALLOWED_ORIGINS = [
+# "http://localhost:3000",
+# "http://127.0.0.1:3000",
+# "https://localhost:8080",
+# ]
+
+CORS_ALLOWED_ORIGINS = ["*"]
+
+
+# CSRF_TRUSTED_ORIGINS = [
+# "http://localhost:3000",
+# "https://localhost:8080",
+# ]
+
+CSRF_TRUSTED_ORIGINS = ["*"]
 
 CSRF_COOKIE_HTTPONLY = False # To access it from the fetch API
 SESSION_COOKIE_HTTPONLY = False # To access it from the fetch API

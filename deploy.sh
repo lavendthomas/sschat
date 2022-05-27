@@ -1,7 +1,7 @@
 #!/bin/bash
 
 pip3 install Django
-export SECRET_KEY=${python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"}
+export SECRET_KEY=$(python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())")
 
 # Generate the key pair
 mkdir -p client/env/certs/
