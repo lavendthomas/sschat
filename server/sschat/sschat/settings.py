@@ -26,33 +26,27 @@ SECRET_KEY = os.environ["SECRET_KEY"]
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-# ALLOWED_HOSTS = [
-#     ""https://localhost:8080",
-#     "http://localhost:3000""
-# ]
-ALLOWED_HOSTS = ["*"]
+# Only traffic from inside of the OCI containers will we allowed. 
+# Ouside traffic will come from the NGINX reverse proxy.
+ALLOWED_HOSTS = ["*"] 
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000", # debug
+    "https://localhost:8080", # production
+]
 
-# CORS_ALLOWED_ORIGINS = [
-# "http://localhost:3000",
-# "http://127.0.0.1:3000",
-# "https://localhost:8080",
-# ]
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:3000", # debug
+    "https://localhost:8080", # production
+]
 
-CORS_ALLOWED_ORIGINS = ["*"]
+CSRF_COOKIE_HTTPONLY = True # To access it from the fetch API
+SESSION_COOKIE_HTTPONLY = True # To access it from the fetch API
 
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
 
-# CSRF_TRUSTED_ORIGINS = [
-# "http://localhost:3000",
-# "https://localhost:8080",
-# ]
-
-CSRF_TRUSTED_ORIGINS = ["*"]
-
-CSRF_COOKIE_HTTPONLY = False # To access it from the fetch API
-SESSION_COOKIE_HTTPONLY = False # To access it from the fetch API
-
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOW_CREDENTIALS = True
 APPEND_SLASH=False
 
@@ -103,15 +97,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'sschat.wsgi.application'
 ASGI_APPLICATION = 'sschat.asgi.application'
 
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [('127.0.0.1', 6379)],
-        },
-        # "BACKEND": "channels.layers.InMemoryChannelLayer"#
-    },
-}
 
 # Logging
 LOGGING = {

@@ -1,5 +1,7 @@
 # environment
 client/env/
+logs/
+db.sqlite3
 
 # HTTP tests
 *.http
