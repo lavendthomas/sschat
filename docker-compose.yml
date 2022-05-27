@@ -4,6 +4,9 @@ services:
         image: localhost/sschat-server
         environment:
             - SECRET_KEY=${SECRET_KEY}
+        build:
+            context: ./server
+            dockerfile: ./Dockerfile
         # volumes:
         #     - ./database:/app/database/
     frontend:
@@ -12,6 +15,9 @@ services:
             - "8080:443"
         environment:
             - PROXY_API=http://backend:8000
+        build:
+            context: ./client
+            dockerfile: ./Dockerfile
         # volumes:
             # - logs/:/var/log/nginx/
             # - ./clients/env/certs/:/etc/nginx/certs/
