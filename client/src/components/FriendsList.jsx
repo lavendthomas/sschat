@@ -22,7 +22,7 @@ const FriendsList = (props) => {
 
   useEffect(() => {
     getCsrfToken().then((csrfToken) => {
-      fetch("http://localhost:8000/msg/friends_list_detailed", {
+      fetch("https://localhost:8080/api/msg/friends_list_detailed", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -53,7 +53,7 @@ const FriendsList = (props) => {
   const handleFriendDelete = (friend) => {
     console.log("delete friend: ", friend);
     getCsrfToken().then((csrfToken) => {
-      fetch("http://localhost:8000/msg/reject_friend", {
+      fetch("https:8080/api/msg/reject_friend", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -98,7 +98,7 @@ const FriendsList = (props) => {
   const addFriend = (e) => {
     e.preventDefault();
     getCsrfToken().then((csrfToken) => {
-      fetch("http://localhost:8000/msg/ask_friend", {
+      fetch("https://localhost:8080/api/msg/ask_friend", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -43,7 +43,7 @@ export default function SimpleCard(props) {
             props.password.password = password;
 
             // Register with out new public key
-            fetch("http://localhost:8000/msg/sign_up", {
+            fetch("https://localhost:8080/api/msg/sign_up", {
               method: "POST",
               body: JSON.stringify({
                   user: username,

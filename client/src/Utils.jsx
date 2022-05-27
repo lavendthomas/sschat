@@ -1,4 +1,4 @@
-const API_HOST = 'http://localhost:8000';
+const API_HOST = 'http://localhost:8080/api';
 
 let _csrfToken = null;
 

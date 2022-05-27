@@ -29,7 +29,7 @@ export default function LoginCard(props) {
         setGlobalPassword(password); // Store the password in a global variable so that the chat can decrypt the messages
         props.password.password = password
         localStorage.setItem("whoami", username);
-        fetch("http://localhost:8000/msg/sign_in", {
+        fetch("https://localhost:8080/api/msg/sign_in", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

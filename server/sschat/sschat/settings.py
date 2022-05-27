@@ -27,19 +27,19 @@ SECRET_KEY = 'django-insecure-4-%#1$^wvqwhw#(ni6yv(nsu6!7=2ln^$189zgleox3v(h)$k*
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    "http://localhost:8080",
+    "https://localhost:8080",
     "http://localhost:3000"
 ]
 
 CORS_ALLOWED_ORIGINS = [
 "http://localhost:3000",
 "http://127.0.0.1:3000",
-"http://localhost:8080",
+"https://localhost:8080",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
 "http://localhost:3000",
-"http://localhost:8080",
+"https://localhost:8080",
 ]
 
 CSRF_COOKIE_HTTPONLY = False # To access it from the fetch API

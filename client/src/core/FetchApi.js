@@ -3,7 +3,7 @@ import getCsrfToken from "../Utils";
 
 export const fetchApiPost = (path, body, then) => {
     return getCsrfToken().then(csrfToken => {
-        fetch(`http://localhost:8000/${path}`, {
+        fetch(`https://localhost:8080/api/${path}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
