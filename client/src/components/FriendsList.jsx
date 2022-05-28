@@ -33,14 +33,12 @@ const FriendsList = (props) => {
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log(data);
-
           // Check that all PGP keys match
-          data.forEach((friend) => {
+          data.friends.forEach((friend) => {
             PublicKeyStorage.update(friend.name, friend.public_pgp_key);
           });
 
-          setFriendsList(data);
+          setFriendsList(data.friends);
         });
     });
   }, [refreshFriendsList]);

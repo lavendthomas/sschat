@@ -1,12 +1,71 @@
 # SSChat
 
+## Group members
 
-## Install
+- Thomas Lavend'Homme (181386)
+- Ryan Byloos (182167)
 
+
+## Installation Instructions
+
+This installation guide has been tested on Ubuntu 22.04 LTS. It is also available in this repo at [the deployment script deploy.sh](deploy.sh)
+
+```sh
+sudo apt update
+sudo apt install python3-pip
 ```
-sudo apt install python3-dev
-sudo dnf install python3-devel
+
+The deployment uses [Podman](https://podman.io/) to build and run [OCI containers])(https://opencontainers.org/). Note that [Docker](https://www.docker.com/) can also be used to build and run these containers. However, standard distributions of Docker run containers with root privileges, which is not desirable for security reasons. Podman runs containers without root privileges by default.
+
+```sh
+sudo apt install podman
+pip3 install podman-compose
 ```
+
+## Build Instructions and Deployment
+
+The Django server needs a random `SECRET_KEY` varaible, different for each deployment. Generate it and store it in the environment variables:
+
+```sh
+pip3 install Django
+export SECRET_KEY=$(python3 -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())")
+```
+
+Go to the root of this repository, and then generate the self-signed certificate:
+
+
+```sh
+mkdir -p client/env/certs/
+cd client/env/certs/
+openssl req -newkey rsa:2048 -nodes -keyout sshchat.umons.ac.be.key -x509 -days 365 -out sshchat.umons.ac.be.crt
+cd ../..
+```
+
+Run the following command to build the OCI images and run the web server:
+
+```sh
+podman-compose up
+```
+
+The app it now available at [http://localhost:8080](http://localhost:8080).
+
+## Uninstallation prodedure
+
+Stop the web server:
+
+```sh
+podman-compose down
+```
+
+Remove OCI containers and images. Warning, this will erase all existing podman containers and images on the system.
+
+```sh
+podman rm -a
+podman image rm -a
+podman system prune -a
+```
+
+Then, uninstall unnecessary system and python packages.
 
 
 ## TODO
@@ -14,32 +73,21 @@ sudo dnf install python3-devel
 <!-- - Encrypted localStorage to protect metadata from unconnected users: [SecurityJS](https://github.com/Parking-Master/SecurityJS.128#windowsecurestorage-api) -->
 <!-- - Username in sign up form. -->
 <!-- - Use IntexedDB instead of localStorage for message history -->
-- Check that the CSRF cookie is invalidated when loggin out.
+<!-- - Check that the CSRF cookie is invalidated when loggin out. -->
 <!-- - Check that the message is signed. Otherwise, show the message in red. -->
 <!-- - Show a hash of our public key and the one of our friends so make sure that chats are encrypted to the right person. -->
 <!-- - Handle add/remove friends. -->
 - Do not decrypt every messages all the time.
 - Add logs.
-- HTTPS
+<!-- - HTTPS -->
 <!-- - Modal for password prompt or a better way to keep the password at login -->
 - We NEED to throttle requests to authenticate users!
 - Look if we can patch the security vulnerabilities
 - Do not forward to /chat if not loggined in
 
-## Deployment
-
-Use nginx to serve the html files
-
 ### Steps
 
-- Regenerate the SECRET_KEY in `server/sschat/settings/py` by changing its value to the output of `python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"`.
-
-- Generate a Self-Signed Certificate: `openssl req -newkey rsa:2048 -nodes -keyout sshchat.umons.ac.be.key -x509 -days 365 -out sshchat.umons.ac.be.crt`
-
-<!-- - Set up the X-Frame-Options https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options#configuring_nginx   add_header X-Frame-Options SAMEORIGIN always; -->
 - Set up the logs https://docs.nginx.com/nginx/admin-guide/monitoring/logging/ ¡DONT INCLUDE MESSAGES!  
-- Reverse proxy for the API
-
 
 ## Security of Django
 

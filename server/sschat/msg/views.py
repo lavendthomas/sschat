@@ -93,7 +93,7 @@ def sign_out(request):
 
 @login_required(login_url='/login')
 def whoami(request):
-    return JsonResponse({"user" : request.user.username}, safe=False)
+    return JsonResponse({"user" : request.user.username})
 
 def csrf(request):
     return JsonResponse({'csrfToken': get_token(request)})
@@ -109,21 +109,19 @@ def friends_list(request):
 
     friends_list = list(map(lambda id: Profile.objects.get(id=id[0]).user.username, friends_list))
 
-    return JsonResponse(friends_list, safe=False)
+    return JsonResponse({"friends": friends_list})
 
 @login_required(login_url='/login')
 def friends_list_detailed(request):
     user = Profile.objects.get(user=request.user)
 
-        # let's get all the friends of the user (where both accepted the friendship)
+    # let's get all the friends of the user (where both accepted the friendship)
     friends_list = list(Friendships.objects.filter(user=user).filter(user_accepted=True).filter(friend_accepted=True).values_list('friend'))
     friends_list.extend(list(Friendships.objects.filter(friend=user).filter(user_accepted=True).filter(friend_accepted=True).values_list('user')))
 
-    print(friends_list)
-
     friends_list = list(map(lambda id: {"name": Profile.objects.get(id=id[0]).user.username, "status": Profile.objects.get(id=id[0]).is_client_connected, "public_pgp_key": Profile.objects.get(id=id[0]).public_pgp_key}, friends_list))
 
-    return JsonResponse(friends_list, safe=False)
+    return JsonResponse({"friends": friends_list})
 
 
 
