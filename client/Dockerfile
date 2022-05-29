@@ -3,6 +3,8 @@ FROM nginx:alpine
 COPY . /app
 WORKDIR /app
 
+ENV API_HOST=${API_HOST}
+
 # Install nodejs and build the React website into a static site.
 RUN apk add nodejs npm
 RUN npm install

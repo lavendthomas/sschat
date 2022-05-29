@@ -15,6 +15,7 @@ services:
             - "8080:443"
         environment:
             - PROXY_API=http://backend:8000
+            - API_HOST=https://localhost:8080/api
         build:
             context: ./client
             dockerfile: ./Dockerfile

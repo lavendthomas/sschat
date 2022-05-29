@@ -1,3 +1,5 @@
+limit_req_zone $binary_remote_addr zone=apilimit:10m rate=10r/s; # Max 10 requests per IP per second
+
 server {
     listen       443 ssl;
     server_name  localhost;
@@ -5,7 +7,7 @@ server {
     ssl_certificate /etc/nginx/certs/sshchat.umons.ac.be.crt;
     ssl_certificate_key /etc/nginx/certs/sshchat.umons.ac.be.key;
 
-    access_log /var/log/nginx/access.log main;
+    access_log /var/log/nginx/access.log postdata;
     error_log /var/log/nginx/error.log;
 
     location / {
@@ -16,6 +18,7 @@ server {
 
     # proxy the API
     location /api/ {
+        limit_req zone=apilimit burst=20;
         rewrite /api/(.*) /$1  break;
         proxy_pass ${PROXY_API};
         proxy_set_header X-Real-IP         $remote_addr;
