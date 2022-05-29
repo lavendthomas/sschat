@@ -13,7 +13,7 @@ import { DeleteIcon } from "@chakra-ui/icons";
 
 import { useEffect, useState } from "react";
 import { PublicKeyStorage } from "../core/PublicKeyStorage";
-import getCsrfToken from "../Utils";
+import getCsrfToken, { API_HOST } from "../Utils";
 
 const FriendsList = (props) => {
   const [friendsList, setFriendsList] = useState([]);
@@ -22,7 +22,7 @@ const FriendsList = (props) => {
 
   useEffect(() => {
     getCsrfToken().then((csrfToken) => {
-      fetch("https://localhost:8080/api/msg/friends_list_detailed", {
+      fetch(`${API_HOST}/msg/friends_list_detailed`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -51,7 +51,7 @@ const FriendsList = (props) => {
   const handleFriendDelete = (friend) => {
     console.log("delete friend: ", friend);
     getCsrfToken().then((csrfToken) => {
-      fetch("https:8080/api/msg/reject_friend", {
+      fetch(`${API_HOST}/msg/reject_friend`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -96,7 +96,7 @@ const FriendsList = (props) => {
   const addFriend = (e) => {
     e.preventDefault();
     getCsrfToken().then((csrfToken) => {
-      fetch("https://localhost:8080/api/msg/ask_friend", {
+      fetch(`${API_HOST}/msg/ask_friend`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -118,11 +118,7 @@ const FriendsList = (props) => {
 
   return (
     <div className="friends-list">
-      <Text
-        fontSize="2xl"
-        fontWeight="bold"
-        paddingBottom={".25em"}
-      >
+      <Text fontSize="2xl" fontWeight="bold" paddingBottom={".25em"}>
         Friend List
       </Text>
 

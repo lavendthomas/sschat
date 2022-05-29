@@ -14,7 +14,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as openpgp from 'openpgp';
 import { GLOBALS } from "../core/GlobalVariables";
-import { clearCsrfToken } from '../Utils';
+import { clearCsrfToken, API_HOST } from '../Utils';
   
 export default function SimpleCard(props) {
   
@@ -43,7 +43,7 @@ export default function SimpleCard(props) {
             props.password.password = password;
 
             // Register with out new public key
-            fetch("https://localhost:8080/api/msg/sign_up", {
+            fetch(`${API_HOST}/msg/sign_up`, {
               method: "POST",
               body: JSON.stringify({
                   user: username,

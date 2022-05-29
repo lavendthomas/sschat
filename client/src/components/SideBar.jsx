@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import getCsrfToken from "../Utils";
+import getCsrfToken, { API_HOST } from "../Utils";
 import { PublicKeyStorage } from "../core/PublicKeyStorage";
 import FriendsList from "./FriendsList";
 
@@ -44,7 +44,7 @@ export default function Sidebar(props) {
 
   const signOut = () => {
     getCsrfToken().then((csrfToken) => {
-      fetch("/api/msg/sign_out", {
+      fetch(`${API_HOST}/msg/sign_out`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

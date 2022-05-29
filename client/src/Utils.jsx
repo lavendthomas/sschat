@@ -1,11 +1,11 @@
-const API_HOST = 'https://localhost:8080/api';
+export const API_HOST = process.env.API_HOST;
 
 let _csrfToken = null;
 
 async function getCsrfToken() {
   if (_csrfToken === null) {
     const response = await fetch(`${API_HOST}/msg/csrf`, {
-      credentials: 'include',
+      credentials: "include",
     });
     const data = await response.json();
     _csrfToken = data.csrfToken;

@@ -9,7 +9,7 @@ import {
   Text,
   Link
 } from '@chakra-ui/react';
-import getCsrfToken, { clearCsrfToken } from "../Utils";
+import getCsrfToken, { clearCsrfToken, API_HOST } from "../Utils";
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -29,7 +29,7 @@ export default function LoginCard(props) {
         setGlobalPassword(password); // Store the password in a global variable so that the chat can decrypt the messages
         props.password.password = password
         localStorage.setItem("whoami", username);
-        fetch("https://localhost:8080/api/msg/sign_in", {
+        fetch(`${API_HOST}/msg/sign_in`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
