@@ -7,84 +7,91 @@ import {
   Stack,
   Button,
   Text,
-  Link
-} from '@chakra-ui/react';
+  Link,
+  Center
+} from "@chakra-ui/react";
 import getCsrfToken, { clearCsrfToken, API_HOST } from "../Utils";
 
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { setGlobalPassword } from "../core/GlobalVariables";
 
 export default function LoginCard(props) {
-
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
-    getCsrfToken().then(csrfToken => {
-        e.preventDefault();
-        setGlobalPassword(password); // Store the password in a global variable so that the chat can decrypt the messages
-        props.password.password = password
-        localStorage.setItem("whoami", username);
-        fetch(`${API_HOST}/msg/sign_in`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "*/*",
-                "X-CSRFToken": csrfToken,
-                },
-            credentials: "include",
-            body: JSON.stringify({
-                user: username,
-                password: password,
-                }),
-            })
-            .then(res => res.json())
-            .then(data => {
-                console.debug(data);
-                clearCsrfToken();
-                navigate("/chat");
-            }
-        );
+    getCsrfToken().then((csrfToken) => {
+      e.preventDefault();
+      setGlobalPassword(password); // Store the password in a global variable so that the chat can decrypt the messages
+      props.password.password = password;
+      localStorage.setItem("whoami", username);
+      fetch(`${API_HOST}/msg/sign_in`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "*/*",
+          "X-CSRFToken": csrfToken,
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          user: username,
+          password: password,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.debug(data);
+          clearCsrfToken();
+          navigate("/chat");
+        });
     }, []);
   };
 
   return (
-    <Flex
-      minH={'100vh'}
-      align={'center'}
-      justify={'center'}
-    >
-      <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
-        <Box
-          rounded={'lg'}
-          boxShadow={'lg'}
-          p={8}>
+    <Flex minH={"100vh"} align={"center"} justify={"center"}>
+      <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
+        <Center>
+          <Text fontSize={"2xl"}>Login</Text>
+        </Center>
+        <Box rounded={"lg"} boxShadow={"lg"} p={8}>
           <Stack spacing={4}>
             <FormControl id="username">
               <FormLabel>Username</FormLabel>
-              <Input type="username" focusBorderColor='gray.400' onChange={e => setUsername(e.currentTarget.value)} />
+              <Input
+                type="username"
+                focusBorderColor="gray.400"
+                onChange={(e) => setUsername(e.currentTarget.value)}
+              />
             </FormControl>
             <FormControl id="password">
               <FormLabel>Password</FormLabel>
-              <Input type="password" focusBorderColor='gray.400' onChange={e => setPassword(e.currentTarget.value)}/>
+              <Input
+                type="password"
+                focusBorderColor="gray.400"
+                onChange={(e) => setPassword(e.currentTarget.value)}
+              />
             </FormControl>
             <Stack spacing={10}>
               <Button
-                width={'5em'}
-                alignSelf={'center'}
+                width={"5em"}
+                alignSelf={"center"}
                 type="submit"
                 onClick={handleSubmit}
                 _hover={{
-                  bg: 'gray.200',
-                }}>
+                  bg: "gray.200",
+                }}
+              >
                 Sign in
               </Button>
             </Stack>
-            <Text>Don't have an account yet ?  {' '} <Link onClick={() => navigate("/signup")}>Register here</Link>.</Text>
+            <Text>
+              Don't have an account yet ?{" "}
+              <Link onClick={() => navigate("/signup")}>Register here</Link>.
+            </Text>
           </Stack>
         </Box>
       </Stack>
