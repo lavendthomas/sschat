@@ -84,7 +84,7 @@ def sign_up(request):
     new_user.save()
     new_profile.save()
 
-    return JsonResponse({"message": "connected" + str(new_user) + "-" + str(new_profile)})
+    return JsonResponse({"message": "connected"})
 
 @login_required(login_url='/login')
 def sign_out(request):

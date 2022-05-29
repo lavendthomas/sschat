@@ -3,12 +3,6 @@ FROM nginx:alpine
 COPY . /app
 WORKDIR /app
 
-# The official NGINX image link logs to STDOUT and STDERR
-# see : https://github.com/nginxinc/docker-nginx/blob/5971de30c487356d5d2a2e1a79e02b2612f9a72f/mainline/alpine/Dockerfile#L103
-RUN unlink /var/log/nginx/access.log
-RUN unlink /var/log/nginx/error.log
-
-
 # Install nodejs and build the React website into a static site.
 RUN apk add nodejs npm
 RUN npm install
