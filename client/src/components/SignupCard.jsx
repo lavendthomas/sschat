@@ -30,7 +30,7 @@ export default function SimpleCard(props) {
     if (
       username.match(/^[a-zA-Z0-9_]{3,20}$/) !== null &&
       password.length >= 8 &&
-      password.length <= 20
+      password.length <= 50
     ) {
       openpgp
         .generateKey({
@@ -105,7 +105,7 @@ export default function SimpleCard(props) {
                 onChange={(e) => setPassword(e.currentTarget.value)}
               />
               <FormHelperText>
-                Password must be between 8 and 20 characters long.
+                Password must be between 8 and 50 characters long.
               </FormHelperText>
             </FormControl>
             <Stack spacing={10}>
