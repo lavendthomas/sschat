@@ -3,7 +3,7 @@ import logging
 from datetime import datetime
 
 from django.forms import ValidationError
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.middleware.csrf import get_token
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -61,7 +61,7 @@ def sign_in(request):
         login(request, user)
         return JsonResponse({"message": "Welcome"})
     else:
-        return JsonResponse({"message": "Wrong username or password!"})
+        return HttpResponseForbidden("Invalid credentials")
     
 @csrf_exempt
 def sign_up(request):

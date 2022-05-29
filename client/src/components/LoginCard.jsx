@@ -8,7 +8,7 @@ import {
   Button,
   Text,
   Link,
-  Center
+  Center,
 } from "@chakra-ui/react";
 import getCsrfToken, { clearCsrfToken, API_HOST } from "../Utils";
 
@@ -41,13 +41,15 @@ export default function LoginCard(props) {
           user: username,
           password: password,
         }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          console.debug(data);
+      }).then((res) => {
+        if (res.status === 200) {
           clearCsrfToken();
           navigate("/chat");
-        });
+        }
+        else {
+          alert("Invalid username or password");
+        }
+      });
     }, []);
   };
 
