@@ -106,7 +106,7 @@ export default function SimpleCard(props) {
             </Stack>
             <Text>
               Already have an account ?{" "}
-              <Link onClick={() => navigate("/chat")}>Login here</Link>.
+              <Link onClick={() => navigate("/")}>Login here</Link>.
             </Text>
           </Stack>
         </Box>

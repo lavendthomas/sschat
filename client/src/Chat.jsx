@@ -25,6 +25,7 @@ import { setGlobalPassword } from "./core/GlobalVariables";
 
 import ChatStorage from "./core/ChatStorage";
 import { PublicKeyStorage } from "./core/PublicKeyStorage";
+import { useNavigate } from "react-router-dom";
 
 const Chat = (props) => {
   const [selectedUser, setSelectedUser] = useState("");
@@ -35,6 +36,15 @@ const Chat = (props) => {
   const { isOpen, onOpen, onClose } = useDisclosure({defaultIsOpen: false});
 
   const chatStorage = new ChatStorage(localStorage.getItem("whoami"));
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!("whoami" in localStorage)) {
+      navigate("/");
+    }
+  }
+  , []);
 
   useEffect(() => {
     console.log("code for friend", selectedUser);
