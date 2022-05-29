@@ -86,12 +86,11 @@ def sign_up(request):
 
     return JsonResponse({"message": "connected"})
 
-@login_required(login_url='/login')
 def sign_out(request):
     logout(request)
-    return HttpResponse("disconnected")
+    return JsonResponse({"message": "disconnected"})
 
-@login_required(login_url='/login')
+@login_required
 def whoami(request):
     return JsonResponse({"user" : request.user.username})
 
@@ -99,7 +98,7 @@ def csrf(request):
     return JsonResponse({'csrfToken': get_token(request)})
 
 
-@login_required(login_url='/login')
+@login_required
 def friends_list(request):
     user = Profile.objects.get(user=request.user)
 
@@ -111,7 +110,7 @@ def friends_list(request):
 
     return JsonResponse({"friends": friends_list})
 
-@login_required(login_url='/login')
+@login_required
 def friends_list_detailed(request):
     user = Profile.objects.get(user=request.user)
 
@@ -126,7 +125,7 @@ def friends_list_detailed(request):
 
 
 
-@login_required(login_url='/login')
+@login_required
 def ask_friend(request):
     body = json.loads(request.body.decode('utf-8'))
     friend_username: str = body['friend']
@@ -154,7 +153,7 @@ def ask_friend(request):
     new_friendship.save()
     return HttpResponse("Friendship created!")
 
-@login_required(login_url='/login')
+@login_required
 def accept_friend(request):
     body = json.loads(request.body.decode('utf-8'))
     friend_username: str = body['friend']
@@ -177,7 +176,7 @@ def accept_friend(request):
         return HttpResponse("Friendship accepted!")
 
 
-@login_required(login_url='/login')
+@login_required
 def reject_friend(request):
     body = json.loads(request.body.decode('utf-8'))
     friend_username: str = body['friend']
@@ -207,7 +206,7 @@ def reject_friend(request):
         return JsonResponse({"message":"Friendship rejected!"})
 
 
-@login_required(login_url='/login')
+@login_required
 def send_message(request):
     body = json.loads(request.body.decode('utf-8'))
     print(body)
@@ -235,7 +234,7 @@ def send_message(request):
     return JsonResponse({"message": "Message sent!"})
 
 
-@login_required(login_url='/login')
+@login_required
 def get_messages(request):
     user = Profile.objects.get(user=request.user)
     user_profile = Profile.objects.get(user=request.user)
@@ -250,7 +249,7 @@ def get_messages(request):
     return JsonResponse({"received": received_messages_list})
 
 
-@login_required(login_url='/login')
+@login_required
 def get_pgp_key(request):
     body = json.loads(request.body.decode('utf-8'))
     user_str: str = body['user']
