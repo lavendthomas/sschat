@@ -1,5 +1,6 @@
 import json
 import logging
+import re
 from datetime import datetime
 
 from django.forms import ValidationError
@@ -70,6 +71,10 @@ def sign_up(request):
     username = body['user']
     password = body['password']
     public_pgp_key = body['public_pgp_key']
+
+    username_checker = re.compile("^[a-zA-Z0-9_]{3,20}$")
+    if not username_checker.match(username):
+        return HttpResponseForbidden("Invalid username")
 
     # Check if the user already exists
     has_user = User.objects.filter(username=username).exists()

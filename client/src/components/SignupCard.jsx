@@ -93,8 +93,8 @@ export default function SimpleCard(props) {
                 onChange={(e) => setUsername(e.currentTarget.value)}
               />
               <FormHelperText>
-                Username only accepts alphanumeric characters, hyphens and
-                underscores and must be between 3 and 20 characters long.
+                Username only accepts alphanumeric characters and
+                underscores, and must be between 3 and 20 characters long.
               </FormHelperText>
             </FormControl>
             <FormControl id="password">
