@@ -45,8 +45,7 @@ export default function LoginCard(props) {
         if (res.status === 200) {
           clearCsrfToken();
           navigate("/chat");
-        }
-        else {
+        } else {
           alert("Invalid username or password");
         }
       });
