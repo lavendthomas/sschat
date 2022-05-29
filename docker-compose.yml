@@ -1,4 +1,4 @@
-version: "3"
+version: "3.3"
 services:
     backend:
         image: localhost/sschat-server
@@ -19,8 +19,10 @@ services:
         build:
             context: ./client
             dockerfile: ./Dockerfile
-        # volumes:
-            # - logs/:/var/log/nginx/
-            # - ./clients/env/certs/:/etc/nginx/certs/
+        volumes:
+            - type: bind
+              source: ./client/env/certs
+              target: /etc/nginx/certs
+              read_only: true
         depends_on:
             - backend

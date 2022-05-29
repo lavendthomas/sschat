@@ -12,7 +12,7 @@ RUN npm run build
 RUN apk del nodejs npm
 
 # Copy SSL certificates. Should be volumes?
-COPY ./env/certs/ /etc/nginx/certs/
+# COPY ./env/certs/ /etc/nginx/certs/
 
 # Prevent Clickjacking
 RUN rm /etc/nginx/nginx.conf && cp /app/nginx.conf /etc/nginx/nginx.conf
