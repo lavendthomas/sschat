@@ -1,4 +1,4 @@
-export const API_HOST = process.env.API_HOST || "http://localhost:8080/api";
+export const API_HOST = process.env.API_HOST || "https://localhost:8080/api";
 
 let _csrfToken = null;
 
