@@ -45,11 +45,12 @@ export default function Sidebar(props) {
   const signOut = () => {
     getCsrfToken().then((csrfToken) => {
       fetch(`${API_HOST}/msg/sign_out`, {
-        method: "GET",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-CSRF-TOKEN": csrfToken,
+          "X-CSRFTOKEN": csrfToken,
         },
+        credentials: "include",
       })
         .then((res) => {
           if (res.status === 200) {
