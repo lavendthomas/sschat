@@ -102,6 +102,28 @@ def whoami(request):
 def csrf(request):
     return JsonResponse({'csrfToken': get_token(request)})
 
+@login_required
+def delete_account(request):
+    body = json.loads(request.body.decode('utf-8'))
+    username = body['user']
+    password = body['password']
+
+    user = authenticate(request, username=username, password=password)
+    user_profile = Profile.objects.get(user=user)
+
+    if user is not None:
+        user_messages = MessageQueue.objects.filter(sender=user_profile)
+        if user_messages:
+            user_messages.delete()
+        user_friendships = Friendships.objects.filter(user=user_profile)
+        if user_friendships:
+            user_friendships.delete()
+        user_profile.delete()
+        user.delete()
+        return JsonResponse({"message": "Account deleted"})
+    else:
+        return HttpResponseForbidden("Invalid credentials")
+
 
 @login_required
 def friends_list(request):

@@ -7,6 +7,7 @@ urlpatterns = [
     path('sign_up', views.sign_up, name='sign_up'),
     path('sign_in', views.sign_in, name='sign_in'),
     path('sign_out', views.sign_out, name='sign_out'),
+    path('delete_account', views.delete_account, name='delete_account'),
     path('whoami', views.whoami, name='whoami'),
     path('friends_list', views.friends_list, name='friends_list'),
     path('friends_list_detailed', views.friends_list_detailed, name='friends_list_detailed'),

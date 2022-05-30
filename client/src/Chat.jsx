@@ -11,17 +11,12 @@ import {
   Text,
   Container,
   useDisclosure,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Input,
-  Button
 } from "@chakra-ui/react";
 
-import { setGlobalPassword } from "./core/GlobalVariables";
+import { setGlobalPassword, GLOBALS } from "./core/GlobalVariables";
+import { PasswordModal } from "./components/PasswordModal";
+
+import * as openpgp from "openpgp";
 
 import ChatStorage from "./core/ChatStorage";
 import { PublicKeyStorage } from "./core/PublicKeyStorage";
@@ -33,7 +28,7 @@ const Chat = (props) => {
   const [refresh, setRefresh] = useState(false);
   const [password, setPassword] = useState(props.password.password);
 
-  const { isOpen, onOpen, onClose } = useDisclosure({defaultIsOpen: false});
+  const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: false });
 
   const chatStorage = new ChatStorage(localStorage.getItem("whoami"));
 
@@ -43,8 +38,7 @@ const Chat = (props) => {
     if (!("whoami" in localStorage)) {
       navigate("/");
     }
-  }
-  , []);
+  }, []);
 
   useEffect(() => {
     console.log("code for friend", selectedUser);
@@ -54,17 +48,24 @@ const Chat = (props) => {
   }, [selectedUser]);
 
   useEffect(() => {
-    if (props.password.password === "") {
+    if (password === "") {
       onOpen();
     }
   }, [refresh]);
 
-  const handleOnPasswordPromptOk = () => {
-    props.password.password = password;
+  const handleOnPasswordPromptOk = async () => {
+    const keypair =
+      GLOBALS.WEBSTORAGE_KEYPAIR_ENTRY_PREFIX + localStorage.getItem("whoami");
+    console.log("keypair", keypair);
+    await openpgp.decryptKey({
+      privateKey: await openpgp.readKey({
+        armoredKey: JSON.parse(localStorage.getItem(keypair)).privateKey,
+      }),
+      passphrase: password,
+    });
     setGlobalPassword(password);
-    setPassword("");
     onClose();
-  }
+  };
   return (
     <Flex>
       <SideBar setSelectedUser={setSelectedUser} />
@@ -90,38 +91,21 @@ const Chat = (props) => {
               chatStorage={chatStorage}
               refresh={refresh}
               setRefresh={setRefresh}
-              password={props.password.password}
+              password={password}
             />
           </Container>
         )}
       </VStack>
       <Spacer />
       <>
-        <Modal
-          isOpen={isOpen}
-          onClose={onClose}
-          closeOnOverlayClick={false}
-          closeOnEsc={false}
-        >
-          <ModalOverlay />
-          <ModalContent alignContent={"center"}>
-            <ModalHeader>Please enter your account password</ModalHeader>
-            <ModalBody>
-              Your password will be used to decrypt your messages.
-            </ModalBody>
-            <Center>
-            <Input width={'80%'} type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-            </Center>
-            <ModalFooter>
-              <Button
-                mr={3}
-                onClick={handleOnPasswordPromptOk}
-              >
-                OK
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
+      <PasswordModal
+        isOpen={isOpen}
+        onClose={onClose}
+        password={password}
+        setPassword={setPassword}
+        handleSubmit={handleOnPasswordPromptOk}
+        modalBody={"Your password will be used to decrypt your messages."}
+      />
       </>
     </Flex>
   );
