@@ -7,7 +7,14 @@ import { PasswordModal } from "./PasswordModal";
 
 import { useNavigate } from "react-router-dom";
 
-import { Box, Text, Center, HStack, Button, useDisclosure } from "@chakra-ui/react";
+import {
+  Box,
+  Text,
+  Center,
+  HStack,
+  Button,
+  useDisclosure,
+} from "@chakra-ui/react";
 
 import { LockIcon, DeleteIcon } from "@chakra-ui/icons";
 
@@ -37,9 +44,7 @@ export default function Sidebar(props) {
             navigate("/");
           }
         })
-        .catch((err) => {
-          console.log(err);
-        });
+        .catch((err) => {});
     });
   };
 
@@ -64,9 +69,7 @@ export default function Sidebar(props) {
             navigate("/");
           }
         })
-        .catch((err) => {
-          console.log(err);
-        });
+        .catch((err) => {});
     });
   };
 

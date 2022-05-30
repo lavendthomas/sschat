@@ -44,12 +44,10 @@ const FriendsList = (props) => {
   }, [refreshFriendsList]);
 
   const handleFriendClick = (friend) => {
-    console.log("selected friend: ", friend);
     props.setSelectedUser(friend);
   };
 
   const handleFriendDelete = (friend) => {
-    console.log("delete friend: ", friend);
     getCsrfToken().then((csrfToken) => {
       fetch(`${API_HOST}/msg/reject_friend`, {
         method: "POST",
@@ -65,7 +63,6 @@ const FriendsList = (props) => {
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log(data);
           setRefreshFriendsList(!refreshFriendsList);
         });
     });

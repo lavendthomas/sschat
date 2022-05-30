@@ -41,7 +41,6 @@ const Chat = (props) => {
   }, []);
 
   useEffect(() => {
-    console.log("code for friend", selectedUser);
     PublicKeyStorage.getSecurityCode(selectedUser).then((code) => {
       setSecurityCode(code);
     });
@@ -56,7 +55,6 @@ const Chat = (props) => {
   const handleOnPasswordPromptOk = async () => {
     const keypair =
       GLOBALS.WEBSTORAGE_KEYPAIR_ENTRY_PREFIX + localStorage.getItem("whoami");
-    console.log("keypair", keypair);
     await openpgp.decryptKey({
       privateKey: await openpgp.readKey({
         armoredKey: JSON.parse(localStorage.getItem(keypair)).privateKey,
@@ -98,14 +96,14 @@ const Chat = (props) => {
       </VStack>
       <Spacer />
       <>
-      <PasswordModal
-        isOpen={isOpen}
-        onClose={onClose}
-        password={password}
-        setPassword={setPassword}
-        handleSubmit={handleOnPasswordPromptOk}
-        modalBody={"Your password will be used to decrypt your messages."}
-      />
+        <PasswordModal
+          isOpen={isOpen}
+          onClose={onClose}
+          password={password}
+          setPassword={setPassword}
+          handleSubmit={handleOnPasswordPromptOk}
+          modalBody={"Your password will be used to decrypt your messages."}
+        />
       </>
     </Flex>
   );

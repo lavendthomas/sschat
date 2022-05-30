@@ -1,9 +1,4 @@
-import { 
-  InputGroup, 
-  Input, 
-  InputRightElement, 
-  Button, 
-} from "@chakra-ui/react";
+import { InputGroup, Input, InputRightElement, Button } from "@chakra-ui/react";
 import { useState } from "react";
 
 import * as openpgp from "openpgp";
@@ -16,9 +11,10 @@ export default function ChatInput(props) {
   const [message, setMessage] = useState("");
 
   const handleClick = async () => {
-
     const me = localStorage.getItem("whoami");
-    const armoured_other_public_key = PublicKeyStorage.get_public_key(props.peer_username);
+    const armoured_other_public_key = PublicKeyStorage.get_public_key(
+      props.peer_username
+    );
     const our_armoured_public = PublicKeyStorage.get_public_key(me);
 
     const other_public_key = await openpgp.readKey({
@@ -26,12 +22,12 @@ export default function ChatInput(props) {
     });
     const our_private_key = await openpgp.decryptKey({
       privateKey: await openpgp.readKey({
-          armoredKey: JSON.parse(
-            localStorage.getItem(GLOBALS.WEBSTORAGE_KEYPAIR_ENTRY_PREFIX + me)
-          ).privateKey,
-        }),
-        passphrase: props.password,
-      });
+        armoredKey: JSON.parse(
+          localStorage.getItem(GLOBALS.WEBSTORAGE_KEYPAIR_ENTRY_PREFIX + me)
+        ).privateKey,
+      }),
+      passphrase: props.password,
+    });
 
     const encrypted = await openpgp.encrypt({
       message: await openpgp.createMessage({ text: message }),
@@ -46,9 +42,7 @@ export default function ChatInput(props) {
     fetchApiPost(
       "msg/send_message",
       { to: props.peer_username, message: encrypted },
-      (json) => {
-        // console.log(json);
-      }
+      (json) => {}
     );
 
     // Store an encrypted version of the message to ourselves
@@ -75,23 +69,21 @@ export default function ChatInput(props) {
     setMessage("");
   };
 
-  
-
   return (
     <div>
       <InputGroup size="md">
-      <Input
-        pr="4.5rem"
-        placeholder="Type a message..."
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-      />
-      <InputRightElement width="4.5rem">
-        <Button h="1.75rem" size="sm" onClick={handleClick}>
-          Send
-        </Button>
-      </InputRightElement>
-    </InputGroup>
+        <Input
+          pr="4.5rem"
+          placeholder="Type a message..."
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+        />
+        <InputRightElement width="4.5rem">
+          <Button h="1.75rem" size="sm" onClick={handleClick}>
+            Send
+          </Button>
+        </InputRightElement>
+      </InputGroup>
     </div>
   );
 }

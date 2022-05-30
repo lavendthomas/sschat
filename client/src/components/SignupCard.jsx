@@ -66,7 +66,6 @@ export default function SimpleCard(props) {
             .then((response) => response.json())
             .then((data) => {
               alert("Account created. Please re-login.");
-              // console.log(data);
               clearCsrfToken();
               // Go tho the chat page
               navigate("/");
@@ -93,8 +92,8 @@ export default function SimpleCard(props) {
                 onChange={(e) => setUsername(e.currentTarget.value)}
               />
               <FormHelperText>
-                Username only accepts alphanumeric characters and
-                underscores, and must be between 3 and 20 characters long.
+                Username only accepts alphanumeric characters and underscores,
+                and must be between 3 and 20 characters long.
               </FormHelperText>
             </FormControl>
             <FormControl id="password">

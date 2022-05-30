@@ -1,5 +1,5 @@
-import { Text, Box, useColorModeValue, Button } from "@chakra-ui/react";
-import { SpinnerIcon } from "@chakra-ui/icons";
+import { Text, Box, Button } from "@chakra-ui/react";
+import { RepeatIcon } from "@chakra-ui/icons";
 
 import { useState, useEffect, useRef } from "react";
 
@@ -28,10 +28,10 @@ export default function ChatInput(props) {
   }, [decryptedMessageList]);
 
   useEffect(() => {
-    // updateMessageList();
     messageList
-      .filter((msg) =>
-        !decryptedMessageList.map((m) => m.timestamp).includes(msg.timestamp)
+      .filter(
+        (msg) =>
+          !decryptedMessageList.map((m) => m.timestamp).includes(msg.timestamp)
       )
       .map((msg) => {
         decryptMessage(msg).then((decryptedMessage) => {
@@ -60,7 +60,7 @@ export default function ChatInput(props) {
 
     const other_public_key = await openpgp.readKey({
       armoredKey: armoured_other_public_key,
-    })
+    });
 
     const our_private_key = await openpgp.decryptKey({
       privateKey: await openpgp.readKey({
@@ -80,16 +80,14 @@ export default function ChatInput(props) {
       decryptionKeys: our_private_key,
       config: { preferredCompressionAlgorithm: openpgp.enums.compression.zlib },
       expectSigned: true,
-      verificationKeys: other_public_key
+      verificationKeys: other_public_key,
     });
-
-    console.log("decrypted was signed", decrypted);
 
     return decrypted.data;
   };
 
-  const grayBubbleColor = useColorModeValue("gray.100", "gray.700");
-  const greeBubbleColor = useColorModeValue("green.100", "green.700");
+  const grayBubbleColor = "gray.100";
+  const greeBubbleColor = "green.100";
 
   const refreshMessages = async () => {
     fetchApiPost("msg/get_messages", {}, async (json) => {
@@ -119,6 +117,7 @@ export default function ChatInput(props) {
           borderRadius="lg"
           overflow="hidden"
           bg={msg.direction === "received" ? greeBubbleColor : grayBubbleColor}
+          key={msg.timestamp}
         >
           <Text margin={".25em"}>{msg.message}</Text>
         </Box>
@@ -129,7 +128,6 @@ export default function ChatInput(props) {
   return (
     <Box
       width={"100%"}
-      // minWidth={""}
       height={"80vh"}
       marginTop={".25em"}
       borderWidth="1px"
@@ -137,7 +135,12 @@ export default function ChatInput(props) {
       overflow="hidden"
       overflowY="scroll"
     >
-      <Button leftIcon={<SpinnerIcon />} onClick={refreshMessages}>
+      <Button
+        leftIcon={<RepeatIcon />}
+        onClick={refreshMessages}
+        pos={"fixed"}
+        marginLeft={"23.2em"}
+      >
         Refresh
       </Button>
       <ShowMessages />

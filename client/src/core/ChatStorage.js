@@ -4,7 +4,6 @@ const LOCALSTORAGE_KEY = "chat-storage";
 class ChatStorage {
   constructor(us) {
     this.us = us;
-    console.log("us", us);
     // this.load();
     this.db = new Dexie(LOCALSTORAGE_KEY);
     this.db.version(1).stores({
@@ -24,9 +23,7 @@ class ChatStorage {
       // .map((messages) => updateMessageList(messages));
       messages.sort((a, b) => a.timestamp - b.timestamp);
       updateMessageList(messages);
-    } catch (e) {
-      console.log("error", e);
-    }
+    } catch (e) {}
   }
 
   async add_message(from_user, to_user, message, timestamp) {
@@ -35,11 +32,9 @@ class ChatStorage {
         from_user: from_user,
         to_user: to_user,
         message: message,
-        timestamp: timestamp
+        timestamp: timestamp,
       });
-    } catch (e) {
-      console.log("error", e);
-    }
+    } catch (e) {}
   }
 }
 
