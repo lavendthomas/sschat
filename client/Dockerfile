@@ -1,4 +1,4 @@
-FROM nginx:alpine
+FROM docker.io/library/nginx:alpine
 
 COPY . /app
 WORKDIR /app
@@ -10,9 +10,6 @@ RUN apk add nodejs npm
 RUN npm install
 RUN npm run build
 RUN apk del nodejs npm
-
-# Copy SSL certificates. Should be volumes?
-# COPY ./env/certs/ /etc/nginx/certs/
 
 # Prevent Clickjacking
 RUN rm /etc/nginx/nginx.conf && cp /app/nginx.conf /etc/nginx/nginx.conf
