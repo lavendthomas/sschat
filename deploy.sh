@@ -3,7 +3,7 @@
 sudo apt update
 sudo apt install python3-pip podman
 
-pip3 install -u Django podman-compose
+python3 -m pip install Django podman-compose
 
 export SECRET_KEY=$(python3 -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())")
 
