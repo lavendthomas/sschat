@@ -26,30 +26,29 @@ SECRET_KEY = os.environ["SECRET_KEY"]
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-# Only traffic from inside of the OCI containers will we allowed. 
+# Only traffic from inside of the OCI containers will we allowed.
 # Ouside traffic will come from the NGINX reverse proxy.
-ALLOWED_HOSTS = ["*"] 
+ALLOWED_HOSTS = ["*"]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000", # debug
-    "https://localhost:8080", # production
+    "http://localhost:3000",  # debug
+    "https://localhost:8080",  # production
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:3000", # debug
-    "https://localhost:8080", # production
+    "http://localhost:3000",  # debug
+    "https://localhost:8080",  # production
 ]
 
-CSRF_COOKIE_HTTPONLY = True # To access it from the fetch API
-SESSION_COOKIE_HTTPONLY = True # To access it from the fetch API
+CSRF_COOKIE_HTTPONLY = True  # To access it from the fetch API
+SESSION_COOKIE_HTTPONLY = True  # To access it from the fetch API
 
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOW_CREDENTIALS = True
-APPEND_SLASH=False
-
+APPEND_SLASH = False
 
 
 # Application definition
@@ -85,7 +84,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'axes.middleware.AxesMiddleware', # Note: AxesMiddleware must be after AuthenticationMiddleware
+    # Note: AxesMiddleware must be after AuthenticationMiddleware
+    'axes.middleware.AxesMiddleware',
 ]
 
 ROOT_URLCONF = 'sschat.urls'

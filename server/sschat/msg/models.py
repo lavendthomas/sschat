@@ -4,9 +4,10 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 
+
 class Profile(models.Model):
     """
-    
+
     """
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
@@ -17,10 +18,12 @@ class Profile(models.Model):
 
 class Friendships(models.Model):
     """
-    
+
     """
-    user = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='friendship_user', null=True)
-    friend = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='friendship_friend', null=True)
+    user = models.ForeignKey(
+        Profile, on_delete=models.CASCADE, related_name='friendship_user', null=True)
+    friend = models.ForeignKey(
+        Profile, on_delete=models.CASCADE, related_name='friendship_friend', null=True)
     user_accepted = models.BooleanField(default=False)
     friend_accepted = models.BooleanField(default=False)
 
@@ -28,7 +31,9 @@ class Friendships(models.Model):
 class MessageQueue(models.Model):
     """
     """
-    recipient = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='recipient')
-    sender = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='sender')
+    recipient = models.ForeignKey(
+        Profile, on_delete=models.CASCADE, related_name='recipient')
+    sender = models.ForeignKey(
+        Profile, on_delete=models.CASCADE, related_name='sender')
     message = models.TextField()
     sent_at = models.DateTimeField(auto_now=True)

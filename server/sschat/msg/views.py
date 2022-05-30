@@ -24,30 +24,25 @@ def are_friends_names(a: str, b: str):
 
     b_user = User.objects.get(username=b)
     b_profile = Profile.objects.get(user=b_user)
-    
+
     return are_friends(a_profile, b_profile)
+
 
 def are_friends(a_profile: Profile, b_profile: Profile):
     return Friendships.objects.filter(user=a_profile, friend=b_profile, user_accepted=True, friend_accepted=True) \
         or Friendships.objects.filter(user=b_profile, friend=a_profile, user_accepted=True, friend_accepted=True)
 
+
 def pending_friend_request(a_profile: Profile, b_profile: Profile):
     return Friendships.objects.filter(user=a_profile, friend=b_profile, user_accepted=True, friend_accepted=False) \
         or Friendships.objects.filter(user=b_profile, friend=a_profile, user_accepted=True, friend_accepted=False)
+
 
 def pending_or_are_friends(a_profile: Profile, b_profile: Profile):
     if friendship := Friendships.objects.get(user=a_profile, friend=b_profile):
         return friendship
     else:
         return Friendships.objects.get(user=b_profile, friend=a_profile)
-
-
-# Create your views here.
-
-def _validate_sign_in(request):
-    # Log here!
-    raise ValidationError("Invalid request!")
-
 
 
 def sign_in(request):
@@ -63,7 +58,8 @@ def sign_in(request):
         return JsonResponse({"message": "Welcome"})
     else:
         return HttpResponseForbidden("Invalid credentials")
-    
+
+
 @csrf_exempt
 def sign_up(request):
     LOGGER.info("sign_up" + str(request))
@@ -84,23 +80,28 @@ def sign_up(request):
     new_user: User = User.objects.create(username=username)
     new_user.set_password(password)       # Better for security
 
-    new_profile = Profile.objects.create(user=new_user, public_pgp_key=public_pgp_key)
+    new_profile = Profile.objects.create(
+        user=new_user, public_pgp_key=public_pgp_key)
 
     new_user.save()
     new_profile.save()
 
     return JsonResponse({"message": "connected"})
 
+
 def sign_out(request):
     logout(request)
     return JsonResponse({"message": "disconnected"})
 
+
 @login_required
 def whoami(request):
-    return JsonResponse({"user" : request.user.username})
+    return JsonResponse({"user": request.user.username})
+
 
 def csrf(request):
     return JsonResponse({'csrfToken': get_token(request)})
+
 
 @login_required
 def delete_account(request):
@@ -126,30 +127,19 @@ def delete_account(request):
 
 
 @login_required
-def friends_list(request):
-    user = Profile.objects.get(user=request.user)
-
-    # let's get all the friends of the user (where both accepted the friendship)
-    friends_list = list(Friendships.objects.filter(user=user).filter(user_accepted=True).filter(friend_accepted=True).values_list('friend'))
-    friends_list.extend(list(Friendships.objects.filter(friend=user).filter(user_accepted=True).filter(friend_accepted=True).values_list('user')))
-
-    friends_list = list(map(lambda id: Profile.objects.get(id=id[0]).user.username, friends_list))
-
-    return JsonResponse({"friends": friends_list})
-
-@login_required
 def friends_list_detailed(request):
     user = Profile.objects.get(user=request.user)
 
     # let's get all the friends of the user (where both accepted the friendship)
-    friends_list = list(Friendships.objects.filter(user=user).filter(user_accepted=True).filter(friend_accepted=True).values_list('friend'))
-    friends_list.extend(list(Friendships.objects.filter(friend=user).filter(user_accepted=True).filter(friend_accepted=True).values_list('user')))
+    friends_list = list(Friendships.objects.filter(user=user).filter(
+        user_accepted=True).filter(friend_accepted=True).values_list('friend'))
+    friends_list.extend(list(Friendships.objects.filter(friend=user).filter(
+        user_accepted=True).filter(friend_accepted=True).values_list('user')))
 
-    friends_list = list(map(lambda id: {"name": Profile.objects.get(id=id[0]).user.username, "status": Profile.objects.get(id=id[0]).is_client_connected, "public_pgp_key": Profile.objects.get(id=id[0]).public_pgp_key}, friends_list))
+    friends_list = list(map(lambda id: {"name": Profile.objects.get(id=id[0]).user.username, "status": Profile.objects.get(
+        id=id[0]).is_client_connected, "public_pgp_key": Profile.objects.get(id=id[0]).public_pgp_key}, friends_list))
 
     return JsonResponse({"friends": friends_list})
-
-
 
 
 @login_required
@@ -161,7 +151,8 @@ def ask_friend(request):
     if not User.objects.filter(username=friend_username).exists():
         return HttpResponse("Friend does not exist!")
 
-    friend = Profile.objects.get(user=User.objects.get(username=friend_username))
+    friend = Profile.objects.get(
+        user=User.objects.get(username=friend_username))
     user = Profile.objects.get(user=request.user)
 
     # Check if this user is already a friend
@@ -173,12 +164,13 @@ def ask_friend(request):
         else:
             # let's accept the friend request
             accept_friend(request)
-    
 
     # Everything is ok, create the friendship
-    new_friendship = Friendships.objects.create(user=user, friend=friend, user_accepted=True, friend_accepted=False)
+    new_friendship = Friendships.objects.create(
+        user=user, friend=friend, user_accepted=True, friend_accepted=False)
     new_friendship.save()
     return HttpResponse("Friendship created!")
+
 
 @login_required
 def accept_friend(request):
@@ -189,7 +181,8 @@ def accept_friend(request):
     if not User.objects.filter(username=friend_username).exists():
         return HttpResponse("Friend does not exist!")
 
-    friend = Profile.objects.get(user=User.objects.get(username=friend_username))
+    friend = Profile.objects.get(
+        user=User.objects.get(username=friend_username))
     user = Profile.objects.get(user=request.user)
 
     # Check if the user has a friendship with this friend
@@ -212,7 +205,8 @@ def reject_friend(request):
     if not User.objects.filter(username=friend_username).exists():
         return HttpResponse("Friend does not exist!")
 
-    friend = Profile.objects.get(user=User.objects.get(username=friend_username))
+    friend = Profile.objects.get(
+        user=User.objects.get(username=friend_username))
     user = Profile.objects.get(user=request.user)
 
     # Check if the user has a friendship with this friend
@@ -224,13 +218,13 @@ def reject_friend(request):
     if (pending_friendship is None):
         other_friendship = Friendships.objects.get(user=user, friend=friend)
         if (other_friendship is None):
-            return JsonResponse({"message":"You are not friends with this user!"})
+            return JsonResponse({"message": "You are not friends with this user!"})
         else:
             other_friendship.delete()
-            return JsonResponse({"message":"Friendship rejected!"})
+            return JsonResponse({"message": "Friendship rejected!"})
     else:
         pending_friendship.delete()
-        return JsonResponse({"message":"Friendship rejected!"})
+        return JsonResponse({"message": "Friendship rejected!"})
 
 
 @login_required
@@ -243,7 +237,7 @@ def send_message(request):
     # Make sure that the friend exists
     if not User.objects.filter(username=to_username).exists():
         return JsonResponse({"message": "Friend does not exist!"})
-    
+
     to_user = User.objects.get(username=to_username)
     to_profile = Profile.objects.get(user=to_user)
 
@@ -252,10 +246,11 @@ def send_message(request):
     # Check if the user has a friendship with this friend
     if not are_friends_names(request.user.username, to_username):
         return JsonResponse({"message": "You are not friends with this user!"})
-    
+
     # Everything is ok, create the message
     # Note: the message should be pgp-encrypted on the client side.
-    new_message = MessageQueue.objects.create(sender=user, recipient=to_profile, message=message)
+    new_message = MessageQueue.objects.create(
+        sender=user, recipient=to_profile, message=message)
     new_message.save()
 
     return JsonResponse({"message": "Message sent!"})
@@ -268,7 +263,8 @@ def get_messages(request):
 
     # Get all the messages that the user has received
     received_messages = MessageQueue.objects.filter(recipient=user_profile)
-    received_messages_list = list(map(lambda msg: {"sender" : msg.sender.user.username, "message": msg.message, "id": msg.id, "timestamp":datetime.fromisoformat(str(msg.sent_at)).timestamp()}, received_messages))
+    received_messages_list = list(map(lambda msg: {"sender": msg.sender.user.username, "message": msg.message,
+                                  "id": msg.id, "timestamp": datetime.fromisoformat(str(msg.sent_at)).timestamp()}, received_messages))
 
     # remove all these messages
     received_messages.delete()
