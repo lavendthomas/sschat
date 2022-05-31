@@ -18,15 +18,24 @@ import {
 
 import { LockIcon, DeleteIcon } from "@chakra-ui/icons";
 
+/**
+ * This component is responsible for rendering the sidebar. It is
+ * responsible for displaying the friends list as well as the
+ * two buttons that are used to signout and remove the account.
+ * @param {*} props
+ * @returns
+ */
 export default function Sidebar(props) {
   const navigate = useNavigate();
-
   const user = localStorage.getItem("whoami");
   const [securityCode, setSecurityCode] = useState("");
   const [password, setPassword] = useState("");
-
   const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: false });
 
+  /**
+   * This function is responsible for signing out the user.
+   * It is called when the user clicks the signout button.
+   */
   const signOut = () => {
     getCsrfToken().then((csrfToken) => {
       fetch(`${API_HOST}/msg/sign_out`, {
@@ -48,6 +57,10 @@ export default function Sidebar(props) {
     });
   };
 
+  /**
+   * This function is responsible for removing the user's account.
+   * It is called when the user clicks the remove account button.
+   */
   const deleteAccount = () => {
     getCsrfToken().then((csrfToken) => {
       fetch(`${API_HOST}/msg/delete_account`, {

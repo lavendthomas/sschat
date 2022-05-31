@@ -17,12 +17,22 @@ import { useNavigate } from "react-router-dom";
 
 import { setGlobalPassword } from "../core/GlobalVariables";
 
+/**
+ * This component is responsible for rendering the login card.
+ * @param {*} props
+ * @returns The login card component
+ */
 export default function LoginCard(props) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
 
+  /**
+   * This function is responsible for logging in the user.
+   * It is called when the user clicks the login button.
+   * @param {*} e
+   */
   const handleSubmit = (e) => {
     getCsrfToken().then((csrfToken) => {
       e.preventDefault();

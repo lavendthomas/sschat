@@ -22,6 +22,11 @@ import ChatStorage from "./core/ChatStorage";
 import { PublicKeyStorage } from "./core/PublicKeyStorage";
 import { useNavigate } from "react-router-dom";
 
+/**
+ * This component is responsible for rendering the chat page.
+ * @param {*} props
+ * @returns The chat component
+ */
 const Chat = (props) => {
   const [selectedUser, setSelectedUser] = useState("");
   const [securityCode, setSecurityCode] = useState("");
@@ -52,6 +57,9 @@ const Chat = (props) => {
     }
   }, [refresh]);
 
+  /**
+   * This function is responsible for handling the validation of the password modal.
+   */
   const handleOnPasswordPromptOk = async () => {
     const keypair =
       GLOBALS.WEBSTORAGE_KEYPAIR_ENTRY_PREFIX + localStorage.getItem("whoami");

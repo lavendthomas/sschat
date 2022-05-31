@@ -9,7 +9,12 @@ import { fetchApiPost } from "../core/FetchApi";
 import getPassword, { GLOBALS } from "../core/GlobalVariables";
 import { PublicKeyStorage } from "../core/PublicKeyStorage";
 
-export default function ChatInput(props) {
+/**
+ * This component is reponsible for rendering the chat area.
+ * @param {*} props
+ * @returns the chat area component
+ */
+export default function ChatArea(props) {
   const [decryptedMessageList, setDecryptedMessageList] = useState([]);
   const [messageList, updateMessageList] = useState([]);
 
@@ -51,6 +56,12 @@ export default function ChatInput(props) {
       });
   }, [messageList]);
 
+  /**
+   * This function is responsible for decrypting the message using the private key
+   * of the user and the public key of the other user for verification.
+   * @param {*} message
+   * @returns
+   */
   const decryptMessage = async (message) => {
     const me = localStorage.getItem("whoami");
 
@@ -89,6 +100,9 @@ export default function ChatInput(props) {
   const grayBubbleColor = "gray.100";
   const greeBubbleColor = "green.100";
 
+  /**
+   * This function is responsible for refreshing the messages.
+   */
   const refreshMessages = async () => {
     fetchApiPost("msg/get_messages", {}, async (json) => {
       json.received.forEach((msg) => {
@@ -107,6 +121,11 @@ export default function ChatInput(props) {
     });
   };
 
+  /**
+   * This function is responsible for the rendering of the decrypted messages.
+   * It generates a Box component for each message.
+   * @returns a list of decrypted messages
+   */
   const ShowMessages = () => {
     return decryptedMessageList.map((msg) => {
       return (

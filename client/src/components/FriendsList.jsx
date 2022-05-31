@@ -15,6 +15,11 @@ import { useEffect, useState } from "react";
 import { PublicKeyStorage } from "../core/PublicKeyStorage";
 import getCsrfToken, { API_HOST } from "../Utils";
 
+/**
+ * This component is responsible for rendering the friends list.
+ * @param {*} props
+ * @returns The friends list component
+ */
 const FriendsList = (props) => {
   const [friendsList, setFriendsList] = useState([]);
   const [refreshFriendsList, setRefreshFriendsList] = useState(false);
@@ -43,10 +48,20 @@ const FriendsList = (props) => {
     });
   }, [refreshFriendsList]);
 
+  /**
+   * This function is called when clicking on a friend.
+   * It is responsible for setting the selected user.
+   * @param {*} friend
+   */
   const handleFriendClick = (friend) => {
     props.setSelectedUser(friend);
   };
 
+  /**
+   * This function is called when the super click on the delete button next to a friend.
+   * It is responsible for deleting the friend.
+   * @param {*} friend
+   */
   const handleFriendDelete = (friend) => {
     getCsrfToken().then((csrfToken) => {
       fetch(`${API_HOST}/msg/reject_friend`, {
@@ -74,6 +89,10 @@ const FriendsList = (props) => {
   const handleFriendDeleteGenerator = (friend) => () =>
     handleFriendDelete(friend);
 
+  /**
+   * This function is responsible for rendering the friends list.
+   * @returns The friends list component
+   */
   const RenderFriends = () => {
     return friendsList
       .map((details) => details.name)
@@ -90,6 +109,11 @@ const FriendsList = (props) => {
       ));
   };
 
+  /**
+   * This function is called when the user click on the button to add a friend.
+   * It is responsible for adding a friend.
+   * @param {*} e
+   */
   const addFriend = (e) => {
     e.preventDefault();
     getCsrfToken().then((csrfToken) => {

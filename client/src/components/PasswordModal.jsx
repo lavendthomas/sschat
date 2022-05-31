@@ -10,6 +10,12 @@ import {
   Button,
 } from "@chakra-ui/react";
 
+/**
+ * This component is responsible for rendering the password modal.
+ * This modal is used to enter the password of the user.
+ * @param {*} param0
+ * @returns The password modal component
+ */
 export const PasswordModal = ({
   isOpen,
   onClose,
