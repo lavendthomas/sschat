@@ -15,7 +15,7 @@ sudo apt update
 sudo apt install python3-pip
 ```
 
-The deployment uses [Podman](https://podman.io/) to build and run [OCI containers])(https://opencontainers.org/). Note that [Docker](https://www.docker.com/) can also be used to build and run these containers. However, standard distributions of Docker run containers with root privileges, which is not desirable for security reasons. Podman runs containers without root privileges by default.
+The deployment uses [Podman](https://podman.io/) to build and run [OCI containers](https://opencontainers.org/). Note that [Docker](https://www.docker.com/) can also be used to build and run these containers. However, standard distributions of Docker run containers with root privileges, which is not desirable for security reasons. Podman runs containers without root privileges by default.
 
 ```sh
 sudo apt install podman
