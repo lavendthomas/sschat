@@ -4,7 +4,6 @@ import {
   FormControl,
   FormLabel,
   FormHelperText,
-  FormErrorMessage,
   Input,
   Stack,
   Button,
@@ -19,12 +18,22 @@ import * as openpgp from "openpgp";
 import { GLOBALS } from "../core/GlobalVariables";
 import { clearCsrfToken, API_HOST } from "../Utils";
 
-export default function SimpleCard(props) {
+/**
+ * This component is responsible for rendering the signup card.
+ * @param {*} props
+ * @returns the signup card component
+ */
+export default function SignupCard(props) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
 
+  /**
+   * This function is responsible for signing up the user.
+   * It is called when the user clicks the signup button.
+   * @param {*} e
+   */
   const handleSubmit = (e) => {
     e.preventDefault();
     if (

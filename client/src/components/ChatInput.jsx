@@ -7,9 +7,18 @@ import { fetchApiPost } from "../core/FetchApi";
 import { GLOBALS } from "../core/GlobalVariables";
 import { PublicKeyStorage } from "../core/PublicKeyStorage";
 
+/**
+ * This component is responsible for rendering the chat input.
+ * @param {*} props
+ * @returns the chat input component
+ */
 export default function ChatInput(props) {
   const [message, setMessage] = useState("");
 
+  /**
+   * This function is responsible for encrypting the message and for sending the encrypted message to the server.
+   * It is called when the user clicks the send button.
+   */
   const handleClick = async () => {
     const me = localStorage.getItem("whoami");
     const armoured_other_public_key = PublicKeyStorage.get_public_key(
