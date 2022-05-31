@@ -1,10 +1,16 @@
 import { GLOBALS } from "./GlobalVariables";
 
+/**
+ * This class is a wrapper over localStorage to provide a central place
+ * to store the public key of all users.
+ */
 export class PublicKeyStorage {
+  
   /**
-   *
-   * @param {} other_user
-   * @param {*} public_key
+   * This function stores the public key of a user in the localStorage, or replace the
+   * existing one if it already exists.
+   * @param {string} other_user The user to store the public key of
+   * @param {string} public_key The public key to store
    * @returns true is the key was updated
    */
   static update(other_user, public_key) {
@@ -33,6 +39,11 @@ export class PublicKeyStorage {
     );
   }
 
+  /**
+   * Gets the public key for a user.
+   * @param {string} user the user to get the public key of 
+   * @returns 
+   */
   static get_public_key(user) {
     if (!user) {
       return;
@@ -52,6 +63,13 @@ export class PublicKeyStorage {
     }
   }
 
+  /**
+   * Generates a security code from a public key. 
+   * The security code is a 6-digit code that is generated 
+   * from the hash public key of the
+   * @param {*} publicKey The public key to generate the security code from
+   * @returns  the security code of the user
+   */
   static async _generateCodeFromPublicKey(publicKey) {
     const hashBuffer = await window.crypto.subtle.digest(
       "SHA-256",
@@ -63,7 +81,14 @@ export class PublicKeyStorage {
       .join("");
     return hashHex.substring(0, 6);
   }
-
+  
+  /**
+   * Returns the security code for a specific user.
+   * The security code is a 6-digit code that is generated 
+   * from the hash public key of the user.
+   * @param {string} user The user to get the security code of
+   * @returns the security code of the user
+   */
   static async getSecurityCode(user) {
     const public_key = this.get_public_key(user);
     return await this._generateCodeFromPublicKey(public_key);
