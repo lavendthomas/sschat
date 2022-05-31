@@ -24,7 +24,7 @@ pip3 install podman-compose
 
 ## Build Instructions and Deployment
 
-The Django server needs a random `SECRET_KEY` varaible, different for each deployment. Generate it and store it in the environment variables:
+The Django server needs a random `SECRET_KEY` variable, different for each deployment. Generate it and store it in the environment variables:
 
 ```sh
 pip3 install Django
@@ -47,7 +47,7 @@ Run the following command to build the OCI images and run the web server:
 podman-compose up
 ```
 
-The app is now available at [http://localhost:8080](http://localhost:8080).
+The app is now available at [https://localhost:8080](https://localhost:8080).
 
 ## Uninstallation prodedure
 
