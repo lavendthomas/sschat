@@ -38,7 +38,7 @@ Go to the root of this repository, and then generate the self-signed certificate
 mkdir -p client/env/certs/
 cd client/env/certs/
 openssl req -newkey rsa:2048 -nodes -keyout sshchat.umons.ac.be.key -x509 -days 365 -out sshchat.umons.ac.be.crt
-cd ../..
+cd ../../..
 ```
 
 Run the following command to build the OCI images and run the web server:
