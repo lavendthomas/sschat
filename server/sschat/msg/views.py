@@ -45,7 +45,13 @@ def pending_or_are_friends(a_profile: Profile, b_profile: Profile):
         return Friendships.objects.get(user=b_profile, friend=a_profile)
 
 
+
 def sign_in(request):
+    """
+    Logs a user. This will create a new session id cookie and send it it to the client.
+    This cookie is authentificated to the user, and will expire in two weeks or
+    whenever the user logs out.
+    """
     LOGGER.info("sign_in" + str(request))
     body = json.loads(request.body.decode('utf-8'))
     username = body['user']
@@ -62,6 +68,12 @@ def sign_in(request):
 
 @csrf_exempt
 def sign_up(request):
+    """
+    Creates a new user. The user is expected to send a json body with the request
+    containing the username, password and public_pgp_key.
+    If the user not already exists, it will be created if the username is valid.
+    csrf_exempt as users are not authentificated, so csrf is not necessary.
+    """
     LOGGER.info("sign_up" + str(request))
     body = json.loads(request.body.decode('utf-8'))
     username = body['user']
@@ -90,21 +102,35 @@ def sign_up(request):
 
 
 def sign_out(request):
+    """
+    Logs out the user. The session id cookie will be deleted, along with all
+    associated data. 
+    """
     logout(request)
     return JsonResponse({"message": "disconnected"})
 
 
 @login_required
 def whoami(request):
+    """
+    Returns a json with the username of the user.
+    """
     return JsonResponse({"user": request.user.username})
 
 
 def csrf(request):
+    """
+    Returns a json with a new csrf token for the user.
+    """
     return JsonResponse({'csrfToken': get_token(request)})
 
 
 @login_required
 def delete_account(request):
+    """
+    Deletes the user account. This will delete all the data associated with the user, 
+    including queues messages, friendships and the user profile.
+    """
     body = json.loads(request.body.decode('utf-8'))
     username = body['user']
     password = body['password']
@@ -128,6 +154,12 @@ def delete_account(request):
 
 @login_required
 def friends_list_detailed(request):
+    """
+    Returns a json with the list of friends of the user. Two users are friends if both
+    accepted to be friendsThis list contains the username of the friend,
+    the public pgp key of the friend, the status of the friendship.
+    The status outputs whether the user is connected or not
+    """
     user = Profile.objects.get(user=request.user)
 
     # let's get all the friends of the user (where both accepted the friendship)
@@ -144,6 +176,12 @@ def friends_list_detailed(request):
 
 @login_required
 def ask_friend(request):
+    """
+    This request adds a new relationship between the user and the friend, if no prending relationship
+    exists.
+    If the potential friend already asked for a friendship, then the friendship
+    is simply accepted.
+    """
     body = json.loads(request.body.decode('utf-8'))
     friend_username: str = body['friend']
 
@@ -174,6 +212,9 @@ def ask_friend(request):
 
 @login_required
 def accept_friend(request):
+    """
+    Accepts the friendship. This will swap the "accepted" boolean for the user who just accepted
+    """
     body = json.loads(request.body.decode('utf-8'))
     friend_username: str = body['friend']
 
@@ -198,6 +239,9 @@ def accept_friend(request):
 
 @login_required
 def reject_friend(request):
+    """
+    Rejects a friend. This will delete the friendship and pending messages bewteen the two users.
+    """
     body = json.loads(request.body.decode('utf-8'))
     friend_username: str = body['friend']
 
@@ -229,6 +273,10 @@ def reject_friend(request):
 
 @login_required
 def send_message(request):
+    """
+    Puts the message in the "message" field of the json in the message queue with destination
+    "to". This method will not enqueue the message if the two users are not frinds.
+    """
     body = json.loads(request.body.decode('utf-8'))
     print(body)
     to_username: str = body['to']
@@ -258,6 +306,10 @@ def send_message(request):
 
 @login_required
 def get_messages(request):
+    """
+    Retreive and send all messages from the message queue to the user who submitted the request.
+    The messages are deleted from the queue as soon as they are sent.
+    """
     user = Profile.objects.get(user=request.user)
     user_profile = Profile.objects.get(user=request.user)
 
@@ -274,6 +326,9 @@ def get_messages(request):
 
 @login_required
 def get_pgp_key(request):
+    """
+    Returns the PGP key of a specific user. 
+    """
     body = json.loads(request.body.decode('utf-8'))
     user_str: str = body['user']
     user = User.objects.get(username=user_str)

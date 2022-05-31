@@ -15,7 +15,7 @@ sudo apt update
 sudo apt install python3-pip
 ```
 
-The deployment uses [Podman](https://podman.io/) to build and run [OCI containers])(https://opencontainers.org/). Note that [Docker](https://www.docker.com/) can also be used to build and run these containers. However, standard distributions of Docker run containers with root privileges, which is not desirable for security reasons. Podman runs containers without root privileges by default.
+The deployment uses [Podman](https://podman.io/) to build and run [OCI containers](https://opencontainers.org/). Note that [Docker](https://www.docker.com/) can also be used to build and run these containers. However, standard distributions of Docker run containers with root privileges, which is not desirable for security reasons. Podman runs containers without root privileges by default.
 
 ```sh
 sudo apt install podman
@@ -24,7 +24,7 @@ pip3 install podman-compose
 
 ## Build Instructions and Deployment
 
-The Django server needs a random `SECRET_KEY` varaible, different for each deployment. Generate it and store it in the environment variables:
+The Django server needs a random `SECRET_KEY` variable, different for each deployment. Generate it and store it in the environment variables:
 
 ```sh
 pip3 install Django
@@ -47,7 +47,7 @@ Run the following command to build the OCI images and run the web server:
 podman-compose up
 ```
 
-The app is now available at [http://localhost:8080](http://localhost:8080).
+The app is now available at [https://localhost:8080](https://localhost:8080).
 
 ## Uninstallation prodedure
 
