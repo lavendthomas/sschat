@@ -39,11 +39,10 @@ def pending_friend_request(a_profile: Profile, b_profile: Profile):
 
 
 def pending_or_are_friends(a_profile: Profile, b_profile: Profile):
-    if friendship := Friendships.objects.get(user=a_profile, friend=b_profile):
+    if friendship := Friendships.objects.filter(user=a_profile, friend=b_profile):
         return friendship
     else:
-        return Friendships.objects.get(user=b_profile, friend=a_profile)
-
+        return Friendships.objects.filter(user=b_profile, friend=a_profile)
 
 
 def sign_in(request):
